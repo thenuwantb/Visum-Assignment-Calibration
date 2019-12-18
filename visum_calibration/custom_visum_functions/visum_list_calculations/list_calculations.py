@@ -7,8 +7,8 @@ import os.path
 
 import pandas as pd
 import xml.etree.ElementTree as ET
+import custom_visum_functions.satistical_calculations.error_calculations as ec
 
-#import customVisumFunctions.statisticalCalculations as sc
 
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\1_VISUM_Simple"
 verFile = "2_Simple_Network.ver"
@@ -147,7 +147,7 @@ def calcErrorLinklistSimulatedAndObserved(Visum, observedLinkListDf, estimateLis
     observedValuesList = comparisonTableDf['Observed_Values'].tolist()
     simulatedValuesList = comparisonTableDf['Simulated_Values'].tolist()
     
-    error_1 = sc.calculateRMSN(observedValuesList, simulatedValuesList)
+    error_1 = ec.calculateRMSN(observedValuesList, simulatedValuesList)
     
     return error_1
 
@@ -208,7 +208,7 @@ def calcErrorStopPointSimulatedAndObserved(Visum, observedStopPointList, estimat
     observedValuesList = comparisonTableDf['Observed_Values'].tolist()
     simulatedValuesList = comparisonTableDf['Simulated_Values'].tolist()
     
-    error_2 = sc.calculateRMSN(observedValuesList, simulatedValuesList)
+    error_2 = ec.calculateRMSN(observedValuesList, simulatedValuesList)
     
     return error_2
     
