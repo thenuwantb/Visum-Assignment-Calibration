@@ -25,7 +25,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\spsa_far_hp_set_2_run_4.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\spsa_far_hp_set_2_run_2_rs_999.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -52,7 +52,12 @@ plot_dict = OrderedDict()
 plot_dict = {0:[initial_cost, initial_guess]}
 
 u = np.copy(initial_guess)
-np.random.seed(55)
+#np.random.seed(55)
+#np.random.seed(100)
+#np.random.seed(159)
+#np.random.seed(486)
+np.random.seed(999)
+
 
 #measure time - start
 t_start = timeit.default_timer()
