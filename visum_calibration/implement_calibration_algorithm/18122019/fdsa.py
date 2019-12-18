@@ -13,7 +13,7 @@ import os.path
 import pandas as pd
 import win32com.client as com
 
-#test
+
 
 # Load Visum Version and create a Network Object
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\1_VISUM_Simple"
