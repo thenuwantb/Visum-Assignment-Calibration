@@ -22,7 +22,6 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\hyper_parameter_set_4\\fdsa_far_hp_set_4_run_1.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -35,8 +34,8 @@ max_iterations = 300
 
 alpha = 1
 gamma = 0.166666667
-c = 1.122462
-a = 3.2
+c = 2
+a = 1
 A = 30
 
 

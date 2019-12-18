@@ -40,8 +40,8 @@ max_iteration = 300
 
 alpha = 1
 gamma = 0.166666667
-c = 1.122462
-a = 3.2
+c = 2
+a = 1
 A = 30
 
 initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)]
