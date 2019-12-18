@@ -25,7 +25,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\spsa_far_hp_set_2_run_2_rs_999.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\hyper_parameter_set_4\\spsa_far_hp_set_4_run_1.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -38,10 +38,10 @@ stopPointListDf_Observed['Observed_Values'] = stopPointListDf_Observed['Observed
 
 max_iteration = 300
 
-alpha = 0.602
-gamma = 0.101
-c = 1.5178
-a = 0.8055
+alpha = 1
+gamma = 0.166666667
+c = 1.122462
+a = 3.2
 A = 30
 
 initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)]
@@ -52,11 +52,12 @@ plot_dict = OrderedDict()
 plot_dict = {0:[initial_cost, initial_guess]}
 
 u = np.copy(initial_guess)
-#np.random.seed(55)
+
+np.random.seed(55)
 #np.random.seed(100)
 #np.random.seed(159)
 #np.random.seed(486)
-np.random.seed(999)
+#np.random.seed(999)
 
 
 #measure time - start

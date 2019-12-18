@@ -22,7 +22,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\fdsa_far_hp_set_2_run_4.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\hyper_parameter_set_4\\fdsa_far_hp_set_4_run_1.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -33,10 +33,10 @@ stopPointListDf_Observed['Observed_Values'] = stopPointListDf_Observed['Observed
 
 max_iterations = 300
 
-alpha = 0.602
-gamma = 0.101
-c = 1.5178
-a = 0.8055
+alpha = 1
+gamma = 0.166666667
+c = 1.122462
+a = 3.2
 A = 30
 
 
