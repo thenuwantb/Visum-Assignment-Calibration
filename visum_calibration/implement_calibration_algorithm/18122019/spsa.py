@@ -15,19 +15,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import win32com.client as com
+import timeit
 
 
 # Load Visum Version and Create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\1_VISUM_Simple"
-verFile = "2_Simple_Network.ver"
+path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\network"
+verFile = "simple_network_11_stops.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
+
+#save results
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\spsa_far_hp_set_2_run_4.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
 
-stopPointListDf_Observed = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\1_VISUM_Simple\\stopPoint_obs.csv")
+stopPointListDf_Observed = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\network\\stopPoint_obs.csv")
 stopPointListDf_Observed['Key'] = stopPointListDf_Observed['Key'].astype(str)
 stopPointListDf_Observed['Observed_Values'] = stopPointListDf_Observed['Observed_Values'].astype(float)
 
@@ -36,9 +40,9 @@ max_iteration = 300
 
 alpha = 0.602
 gamma = 0.101
-a = 0.101
-A = 0.193
-c = 0.0277
+c = 1.5178
+a = 0.8055
+A = 30
 
 initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)]
 initial_cost = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, initial_guess)
@@ -49,6 +53,9 @@ plot_dict = {0:[initial_cost, initial_guess]}
 
 u = np.copy(initial_guess)
 np.random.seed(55)
+
+#measure time - start
+t_start = timeit.default_timer()
 
 for k in range(max_iteration):
     
@@ -106,9 +113,11 @@ for k in range(max_iteration):
     
     plot_dict[k + 1] = [cost_new, estimate_to_dict]
 
+t_duration = timeit.default_timer() - t_start
+print "Duration = " + str(t_duration)
+
 # saving values to a Data Frame
 results_df = pd.DataFrame()
-df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\1_VISUM_Simple\\SPSA_results_600.csv"
 
 # Creation of the plot - and then save the values to a Data Frame  - change made on 10122019
 iteration_id = []
@@ -123,7 +132,7 @@ results_df['Iteration'] = iteration_id
 results_df['RMSN'] = cost_value
 results_df['estimate'] = estimate_list
 
-results_df.to_csv(df_save_as)
+results_df.to_csv(result_df_save_as)
 
 # Plot
 plt.plot(iteration_id, cost_value)
