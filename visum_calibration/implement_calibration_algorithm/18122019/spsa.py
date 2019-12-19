@@ -25,7 +25,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\hyper_parameter_set_5\\spsa_far_hp_set_5_run_1.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\hyper_parameter_set_10\\spsa_far_solutions_hp_set_10_run_2.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -38,13 +38,16 @@ stopPointListDf_Observed['Observed_Values'] = stopPointListDf_Observed['Observed
 
 max_iteration = 300
 
-alpha = 1
+alpha = 1.0
 gamma = 0.166666667
-c = 2
-a = 1
-A = 30
+c = 1.4
+a = 0.9
+A = 30.0
 
-initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)]
+#initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)] #poor estimates
+#initial_guess = [float(1.8), float(2.8), float(3.8), float(5.8)] #better estimates
+initial_guess = [0.29224852, 0.02938056, 0.17973723, 0.86182642]
+
 initial_cost = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, initial_guess)
 
 print initial_guess, initial_cost
@@ -143,5 +146,5 @@ results_df.to_csv(result_df_save_as)
 # Plot
 plt.plot(iteration_id, cost_value)
 plt.xlabel("Number of Iterations")
-plt.ylabel("Cost")
+plt.ylabel("RMSN")
 plt.show()
