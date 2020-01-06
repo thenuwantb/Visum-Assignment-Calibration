@@ -8,9 +8,6 @@ import os.path
 import win32com.client as com
 import datetime 
 import pandas as pd
-import numpy as np
-import timeit
-from win32con import EN_STOPNOUNDO
 
 #Load Visum Version and Create a Network Object
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\02_Network"
