@@ -10,6 +10,7 @@ import datetime
 import pandas as pd
 import numpy as np
 import timeit
+from win32con import EN_STOPNOUNDO
 
 #Load Visum Version and Create a Network Object
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\02_Network"
@@ -104,10 +105,42 @@ for index, row in stopPointsOnNodeData.iterrows():
     
     Net.AddStopPointOnNode(no, stopArea, node)
 
+#Change List - Transfers and walktimes within stop : calculate walk time with a speed of 1km /h
+
+visumTransferWalkTime = Visum.Lists.CreateStopTransferWalkTimeList
+visumTransferWalkTime.AddColumn("StopNo")
+visumTransferWalkTime.AddColumn("FromStopAreaNo")
+visumTransferWalkTime.AddColumn("ToStopAreaNo")
+visumTransferWalkTime.AddColumn("DirectDist")
+visumTransferWalkTime.AddColumn("Time(W)")
+
+visumTransferWalkTimeArray = visumTransferWalkTime.SaveToArray()
+
+transferWalkTimeDf = pd.DataFrame(list(visumTransferWalkTimeArray), columns = ["StopNo", "FromStopAreaNo","ToStopAreaNo","DirectDist","Time(W)"])
+
+allStops = Visum.Net.Stops.GetAll
+
+
+for index, row in transferWalkTimeDf.iterrows():
+    stopNo = int(row['StopNo'])
+    fromStopArea = int(row['FromStopAreaNo'])
+    toStopArea = int(row['ToStopAreaNo'])
+    directDistance = row['DirectDist']
+    
+    distanceInMeters = directDistance * 1000
+    #walk speed is assumed to 1 meters per second
+    speed = 1.0
+    walkingTime = distanceInMeters / speed  #walking time in seconds
+    
+    currentStop = allStops[stopNo-1]
+    
+    #set walking time
+    currentStop.SetStopAreaTransferWalkTime(fromStopArea, toStopArea, 'W', walkingTime)
+    
 #-------------------------End Main Code-----------------------------------------------------
 
 #Write the new Version file
 fileName, ext = os.path.splitext(versionPath)
-saveAs = "Network_2" + "_" + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d-%H%M") + ext
+saveAs = "Network_2" + "_" + datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d_%H%M") + ext
 saveFileTo = os.path.join(os.path.dirname(versionPath), saveAs)
 Visum.SaveVersion(saveFileTo)
