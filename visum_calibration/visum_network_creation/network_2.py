@@ -131,7 +131,10 @@ for index, row in transferWalkTimeDf.iterrows():
     currentStop = allStops[stopNo-1]
     
     #set walking time
-    currentStop.SetStopAreaTransferWalkTime(fromStopArea, toStopArea, 'W', walkingTime)
+    if walkingTime == 0:
+        currentStop.SetStopAreaTransferWalkTime(fromStopArea, toStopArea, 'W', 86400)
+    else:
+        currentStop.SetStopAreaTransferWalkTime(fromStopArea, toStopArea, 'W', walkingTime)
     
 #-------------------------End Main Code-----------------------------------------------------
 
