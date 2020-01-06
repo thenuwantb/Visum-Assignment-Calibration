@@ -69,7 +69,6 @@ for index, row in linkData.iterrows():
 #Add Stop related data
 stopFilePath = os.path.join(path, "Stops.xlsx")
 
-print stopFilePath
 stopData = pd.read_excel(stopFilePath, 'stops')
 stopAreaData = pd.read_excel(stopFilePath, 'stopAreas')
 stopPointsOnNodeData = pd.read_excel(stopFilePath, 'stopPointsOnNodes')
