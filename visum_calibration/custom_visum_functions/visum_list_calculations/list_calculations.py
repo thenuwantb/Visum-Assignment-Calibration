@@ -172,6 +172,30 @@ def createStopPointListDataFrame(Visum):
     
     return stopPointListDataFrame
 
+def createStopPointsDataFrame(Visum):
+    """
+    Creates a pandas dataframe with transfer wait times and transfer values (TotalTransfers = TransDir + TransAlightWalk + TransWalkBorad)      
+    """
+    #Create the object and add required columns
+    stopPointsList = Visum.Lists.CreateStopPointBaseList
+    stopPointsList.AddColumn("No")
+    stopPointsList.AddColumn("StopAreaNo")
+    stopPointsList.AddColumn("NodeNo")
+    stopPointsList.AddColumn("PassTransTotal(AP)")
+    stopPointsList.AddColumn("PassTransDir(AP)")
+    stopPointsList.AddColumn("PassTransWalkBoard(AP)")
+    stopPointsList.AddColumn("PassTransAlightWalk(AP)")
+    stopPointsList.AddColumn("TransferWaitTime(AP)")
+    
+    columnsList = ["No", "StopAreaNo", "NodeNo", "PassTransTotal(AP)", "PassTransDir(AP)", "PassTransWalkBoard(AP)", "PassTransAlightWalk(AP)", "TransferWaitTime(AP)"]
+    
+    #creating pandas dataframe
+    
+    stopPointListArray = stopPointsList.SaveToArray()
+    stopPointListDf = pd.DataFrame(list(stopPointListArray), columns = columnsList)
+    
+    return stopPointListDf
+                                   
 
 def executeVisumProceduresWithEstimates_stopPointList(Visum, estimate_list):
      
