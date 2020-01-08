@@ -265,7 +265,7 @@ def calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, estimate
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Sim", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Sim"}
     simulatedStopPointDf = simulatedStopPointDf.rename(columns = changeColNamesDic)
     
-    comparisonTableDf = observedStopPointDf.merge(simulatedStopPointDf, on = ["No", "StopAreaNo", "NodeNo"])
+    comparisonTableDf = observedStopPointDf.merge(simulatedStopPointDf, on = "No")  #"No", "StopAreaNo", "NodeNo"
     
     #Calculate RMSN values
     

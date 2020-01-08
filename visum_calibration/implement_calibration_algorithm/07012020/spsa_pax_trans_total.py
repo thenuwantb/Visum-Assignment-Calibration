@@ -1,5 +1,5 @@
 '''
-Created on 7 Jan 2020
+Created on 8 Jan 2020
 
 @author: thenuwan.jayasinghe
 '''
@@ -22,7 +22,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\test_08012020_7_FDSA.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\test_08012020_7_SPSA.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -47,46 +47,62 @@ A = 30
 initial_guess = [1.8, 2.8, 2.9, 0.8, 1.5, 4.0] 
 initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
 
+initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
+
+print initial_guess, initial_cost
 plot_dict = OrderedDict()
 plot_dict = {0:[initial_cost, initial_guess]}
 
 u = np.copy(initial_guess)
+
+np.random.seed(55)
+#np.random.seed(100)
+#np.random.seed(159)
+#np.random.seed(486)
+#np.random.seed(999)
+
 
 #measure time - start
 t_start = timeit.default_timer()
 
 for k in range(max_iterations):
     
-    ak = a / (A + k + 1)**alpha
-    ck = c / (k + 1)**gamma
+    ak = a / (A + k + 1) ** alpha
+    ck = c / (k + 1) ** gamma
     
-    gk = np.zeros(shape(u)[0])
+    # Step 2 - Generation of simultaneous perturbation vector
+
+    deltaK = np.random.choice([-1, 1], size=len(u), p=[0.5, 0.5])  # delta_k = np.array([1,-1])
     
-    for i in range(shape(gk)[0]):
-        
-        # Step 2: Generate perturbations one parameter at a time. 
-        
-        increase_u = np.copy(u)
-        
-        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9 :
-            increase_u[i] += ck
-        
-        decrease_u = np.copy(u)
-        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9 :
-            decrease_u[i] -= ck
-        
-        # Step 3: Function evaluation
-        cost_increase = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, increase_u)
+    # looping over each element and check whether it is in range (0,9) after the change
+    increase_u = np.copy(u)
+    decrease_u = np.copy(u)
     
-        cost_decrease = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, decrease_u)
-        
-        # Step 4: Gradient Approximation
-        gk[i] = (cost_increase - cost_decrease) / (2.0 * ck)
-        
+    for i in range(len(increase_u)):
+        if u[i] + ck * deltaK[i] > 0 and u[i] + ck * deltaK[i] <= 9.9:
+            increase_u[i] = u[i] + ck * deltaK[i]
+        else:
+            increase_u[i] = u[i]
+    
+    for j in range(len(decrease_u)):
+        if u[j] - ck * deltaK[j] > 0 and u[j] - ck * deltaK[j] <= 9.9:
+            decrease_u[j] = u[j] - ck * deltaK[j]
+        else:
+            decrease_u[j] = u[j]
+    
+    
+    # Step 3 - Function evaluation
+    cost_increase = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, increase_u)
+    cost_decrease = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, decrease_u)
+    
+    # Step 4 - Gradient approximation
+    gk = np.dot((cost_increase - cost_decrease) / (2.0 * ck), deltaK)
+    
+    # Step 5 - Update u estimate
     old_u = np.copy(u)
-    gk_step_size = ak * gk
     
-    # Step 5 : Update u estimate
+    #--------------fix 05122019---------------------------------
+    gk_step_size = ak * gk
     
     for m in range(len(old_u)):
         if old_u[m] - gk_step_size[m] >= 0 and old_u[m] - gk_step_size[m] <= 9.9:
@@ -96,37 +112,37 @@ for k in range(max_iterations):
             u[m] = old_u[m]
     
     cost_new = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, u)
-    
-    print k
+    #--------------fix 05122019---------------------------------
+     
+    print k 
     print cost_new
     print u
     estimate_to_dict = np.copy(u)
-    plot_dict[k + 1] = [cost_new, estimate_to_dict]
     
+    plot_dict[k + 1] = [cost_new, estimate_to_dict]
+
 t_duration = timeit.default_timer() - t_start
 print "Duration = " + str(t_duration)
 
 # saving values to a Data Frame
 results_df = pd.DataFrame()
 
-
-# Creation of the plot
+# Creation of the plot - and then save the values to a Data Frame  - change made on 10122019
 iteration_id = []
 cost_value = []
 estimate_list = []
-
 for key, value in plot_dict.items():
     iteration_id.append(key)
     cost_value.append(value[0])
     estimate_list.append(value[1])
-
+    
 results_df['Iteration'] = iteration_id
 results_df['RMSN'] = cost_value
-results_df['Estimate'] = estimate_list
+results_df['estimate'] = estimate_list
 
 results_df.to_csv(result_df_save_as)
-    
-# print y_val
+
+# Plot
 plt.plot(iteration_id, cost_value)
 plt.xlabel("Number of Iterations")
 plt.ylabel("RMSN")
