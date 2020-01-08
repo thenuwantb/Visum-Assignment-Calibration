@@ -36,15 +36,15 @@ changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTrans
 observedStopPointDf = observedStopPointDf.rename(columns = changeColNamesDic)
 
 
-max_iterations = 300
+max_iterations = 1000
 
 alpha = 0.602
 gamma = 0.101
 c = 0.02
 a = 0.3197
-A = 30
+A = 100
 
-initial_guess = [1.8, 2.8, 2.9, 0.8, 1.5, 4.0] 
+initial_guess = [1.8, 2.8, 2.9, 0.8, 1.5, 3.8] 
 initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
 
 plot_dict = OrderedDict()
