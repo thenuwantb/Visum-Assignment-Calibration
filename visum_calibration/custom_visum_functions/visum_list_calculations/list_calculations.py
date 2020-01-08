@@ -172,7 +172,7 @@ def createStopPointListDataFrame(Visum):
     
     return stopPointListDataFrame
 
-def createStopPointsDataFrame(Visum):
+def createStopPointsDataFrame(Visum): # Amendment to createStopPointListDataFrame - 08012020
     """
     Creates a pandas dataframe with transfer wait times and transfer values (TotalTransfers = TransDir + TransAlightWalk + TransWalkBorad)      
     """
@@ -220,14 +220,36 @@ def executeVisumProceduresWithEstimates_stopPointList(Visum, estimate_list):
     stopPointListtDf_Simulated = createStopPointListDataFrame(Visum)
     return stopPointListtDf_Simulated
 
-
-def calcErrorStopPointSimulatedAndObserved(Visum, observedStopPointList, estimateList):
-
-    simulatedStopPointListDf = executeVisumProceduresWithEstimates_stopPointList(Visum, estimateList)
+def executeProceduresAndCreateSimulatedStopPointDf(Visum, estimateList): #Amendment to executeVisumProceduresWithEstimates_stopPointList - 08012020
+    inVehTime_c = estimateList[0]
+    transferWalkTime_c = estimateList[1]
+    originWaitTime_c = estimateList[2]
+    transferWaitTime_c = estimateList[3]
+    accessTime_c = estimateList[4]
+    egressTime_c = estimateList[5]
     
-    simulatedStopPointListDf = simulatedStopPointListDf.rename(columns={'PassTransTotal(AP)' : 'Simulated_Values'})
+    # setting attribute values of headway based assignment
+    impedenceParaObject = Visum.Procedures.Operations.ItemByKey(2).PuTAssignmentParameters.HeadwayBasedParameters.ImpedanceParameters
+    
+    impedenceParaObject.SetAttValue("INVEHTIMEVAL", str(inVehTime_c))
+    impedenceParaObject.SetAttValue("WALKTIMEVAL", str(transferWalkTime_c))
+    impedenceParaObject.SetAttValue("ORIGINWAITTIMEVAL", str(originWaitTime_c))
+    impedenceParaObject.SetAttValue("TRANSFERWAITTIMEVAL", str(transferWaitTime_c))
+    impedenceParaObject.SetAttValue("ACCESSTIMEVAL", str(accessTime_c))
+    impedenceParaObject.SetAttValue("EGRESSTIMEVAL", str(egressTime_c))
+    
+    Visum.Procedures.Execute()
+    
+    simulatedStopPointDf = createStopPointsDataFrame(Visum)
+    return simulatedStopPointDf
 
-    comparisonTableDf = observedStopPointList.merge(simulatedStopPointListDf, on='Key')
+def calcErrorStopPointSimulatedAndObserved(Visum, observedStopPointDf, estimateList):
+
+    simulatedStopPointDf = executeVisumProceduresWithEstimates_stopPointList(Visum, estimateList)
+    
+    simulatedStopPointDf = simulatedStopPointDf.rename(columns={'PassTransTotal(AP)' : 'Simulated_Values'})
+
+    comparisonTableDf = observedStopPointDf.merge(simulatedStopPointDf, on='Key')
 
     observedValuesList = comparisonTableDf['Observed_Values'].tolist()
     simulatedValuesList = comparisonTableDf['Simulated_Values'].tolist()
@@ -235,4 +257,22 @@ def calcErrorStopPointSimulatedAndObserved(Visum, observedStopPointList, estimat
     error_2 = ec.calculateRMSN(observedValuesList, simulatedValuesList)
     
     return error_2
+
+def calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, estimateList):
+    simulatedStopPointDf = executeProceduresAndCreateSimulatedStopPointDf(Visum, estimateList)
+    
+    changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Sim", "PassTransDir(AP)" : "PassTransDir(AP)_Sim", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Sim", 
+                      "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Sim", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Sim"}
+    simulatedStopPointDf = simulatedStopPointDf.rename(columns = changeColNamesDic)
+    
+    comparisonTableDf = observedStopPointDf.merge(simulatedStopPointDf, on = ["No", "StopAreaNo", "NodeNo"])
+    
+    #Calculate RMSN values
+    
+    passTransTotal_obs = comparisonTableDf['PassTransTotal(AP)_Obs'].tolist()
+    passTransTotal_sim = comparisonTableDf['PassTransTotal(AP)_Sim'].tolist()
+    
+    passTransTotalRMSN = ec.calculateRMSN(passTransTotal_obs, passTransTotal_sim)
+    
+    return passTransTotalRMSN
     

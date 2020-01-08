@@ -17,26 +17,23 @@ import timeit
 
 # Load Visum Version and create a Network Object
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network"
-verFile = "2_Network_Final.ver"
+verFile = "Network_2_20200107_TJ_Final.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\test_1422.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\test_08012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-stopPointListDf_Observed = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\network\\stop_point_total_pax_transfer_observed.csv")
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed.csv")
 
 #todo rename the columns e.g. "variableName_Obs"
+changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs", 
+                      "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
-
-
-
-
-
-
+observedStopPointDf = observedStopPointDf.rename(columns = changeColNamesDic)
 
 
 max_iterations = 300
@@ -47,10 +44,8 @@ c = 1.4
 a = 0.9
 A = 30.0
 
-#initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)] #poor estimates
-#initial_guess = [float(1.8), float(2.8), float(3.8), float(5.8)] #better estimates
-initial_guess = [0.3472315, 0.001, 0.175536, 1.0454] #results from run 1 plugged in as initial estimates and run the simulation again
-initial_cost = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, initial_guess)
+initial_guess = [0.001, 0.001, 0.001, 0.001, 0.001, 0.001] 
+initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
 
 plot_dict = OrderedDict()
 plot_dict = {0:[initial_cost, initial_guess]}
@@ -81,9 +76,9 @@ for k in range(max_iterations):
             decrease_u[i] -= ck
         
         # Step 3: Function evaluation
-        cost_increase = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, increase_u)
+        cost_increase = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, increase_u)
     
-        cost_decrease = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, decrease_u)
+        cost_decrease = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, decrease_u)
         
         # Step 4: Gradient Approximation
         gk[i] = (cost_increase - cost_decrease) / (2.0 * ck)
@@ -100,7 +95,7 @@ for k in range(max_iterations):
         else:
             u[m] = old_u[m]
     
-    cost_new = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, u)
+    cost_new = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, u)
     
     print k
     print cost_new
