@@ -222,21 +222,21 @@ def executeVisumProceduresWithEstimates_stopPointList(Visum, estimate_list):
 
 def executeProceduresAndCreateSimulatedStopPointDf(Visum, estimateList): #Amendment to executeVisumProceduresWithEstimates_stopPointList - 08012020
     inVehTime_c = estimateList[0]
-    transferWalkTime_c = estimateList[1]
-    originWaitTime_c = estimateList[2]
-    transferWaitTime_c = estimateList[3]
-    accessTime_c = estimateList[4]
-    egressTime_c = estimateList[5]
+    accessTime_c = estimateList[1]
+    egressTime_c = estimateList[2]
+    transferWalkTime_c = estimateList[3]
+    originWaitTime_c = estimateList[4]
+    transferWaitTime_c = estimateList[5]
     
     # setting attribute values of headway based assignment
     impedenceParaObject = Visum.Procedures.Operations.ItemByKey(2).PuTAssignmentParameters.HeadwayBasedParameters.ImpedanceParameters
     
     impedenceParaObject.SetAttValue("INVEHTIMEVAL", str(inVehTime_c))
+    impedenceParaObject.SetAttValue("ACCESSTIMEVAL", str(accessTime_c))
+    impedenceParaObject.SetAttValue("EGRESSTIMEVAL", str(egressTime_c))
     impedenceParaObject.SetAttValue("WALKTIMEVAL", str(transferWalkTime_c))
     impedenceParaObject.SetAttValue("ORIGINWAITTIMEVAL", str(originWaitTime_c))
     impedenceParaObject.SetAttValue("TRANSFERWAITTIMEVAL", str(transferWaitTime_c))
-    impedenceParaObject.SetAttValue("ACCESSTIMEVAL", str(accessTime_c))
-    impedenceParaObject.SetAttValue("EGRESSTIMEVAL", str(egressTime_c))
     
     Visum.Procedures.Execute()
     
@@ -265,14 +265,34 @@ def calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, estimate
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Sim", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Sim"}
     simulatedStopPointDf = simulatedStopPointDf.rename(columns = changeColNamesDic)
     
-    comparisonTableDf = observedStopPointDf.merge(simulatedStopPointDf, on = "No")  #"No", "StopAreaNo", "NodeNo"
+    comparisonTableDf = observedStopPointDf.merge(simulatedStopPointDf, on = ["No", "StopAreaNo", "NodeNo"])  #
+    
+    #comparisonTableDf.to_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\comparison_table.csv")
     
     #Calculate RMSN values
+    #===========================================================================
+    # #1. RMSN of passenger transferring total
+    # passTransTotal_obs = comparisonTableDf['PassTransTotal(AP)_Obs'].tolist()
+    # passTransTotal_sim = comparisonTableDf['PassTransTotal(AP)_Sim'].tolist()
+    # passTransTotalRMSN = ec.calculateRMSN(passTransTotal_obs, passTransTotal_sim)
+    #===========================================================================
     
-    passTransTotal_obs = comparisonTableDf['PassTransTotal(AP)_Obs'].tolist()
-    passTransTotal_sim = comparisonTableDf['PassTransTotal(AP)_Sim'].tolist()
+    ##2. RMSN as a sum of PassTransAlightWalk and PassTransWalkBoard
+    PassTransWalkBoard_obs = comparisonTableDf['PassTransWalkBoard(AP)_Obs'].tolist()
+    PassTransWalkBoard_sim = comparisonTableDf['PassTransWalkBoard(AP)_Sim'].tolist()
     
-    passTransTotalRMSN = ec.calculateRMSN(passTransTotal_obs, passTransTotal_sim)
+    PassTransAlightWalk_obs = comparisonTableDf['PassTransAlightWalk(AP)_Obs'].tolist()
+    PassTransAlightWalk_sim = comparisonTableDf['PassTransAlightWalk(AP)_Sim'].tolist()
     
-    return passTransTotalRMSN
+    ## Addition of RMSN of TransferWaitTime - Addition of 10.01.2020
+    transferWaitTime_obs = comparisonTableDf['TransferWaitTime(AP)_Obs'].tolist()
+    transferWaitTime_sim = comparisonTableDf['TransferWaitTime(AP)_Sim'].tolist()
     
+    passTransAlightWalkRMSN = ec.calculateRMSN(PassTransAlightWalk_obs, PassTransAlightWalk_sim)
+    passTransWalkBoardRMSN = ec.calculateRMSN(PassTransWalkBoard_obs, PassTransWalkBoard_sim)
+    transferWaitTimeRMSN = ec.calculateRMSN(transferWaitTime_obs, transferWaitTime_sim)
+    
+    
+    passTransRMSN = passTransAlightWalkRMSN + passTransWalkBoardRMSN + transferWaitTimeRMSN
+    
+    return passTransRMSN

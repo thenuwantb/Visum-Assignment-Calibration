@@ -6,7 +6,6 @@ Created on 8 Jan 2020
 from collections import OrderedDict
 from custom_visum_functions.open_close_visum import open_close as ocv
 from custom_visum_functions.visum_list_calculations import list_calculations as vlc
-from numpy import shape
 import matplotlib.pyplot as plt
 import numpy as np
 import os.path
@@ -22,12 +21,12 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 #save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\test_08012020_7_SPSA.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\hp_set14_FDSA_10012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed.csv")
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
 
 #todo rename the columns e.g. "variableName_Obs"
 changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs", 
@@ -40,11 +39,13 @@ max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 0.02
-a = 0.3197
-A = 30
+c = 0.536258308408971
+a = 3.62503998020419
+A = 30.0
+C = 0 #added as an experiment - to control the behaviour of ck
 
-initial_guess = [1.8, 2.8, 2.9, 0.8, 1.5, 4.0] 
+# Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
+initial_guess = [2.0, 2.8, 3.0, 1.0, 1.5, 2.0]
 initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
 
 initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
@@ -68,7 +69,7 @@ t_start = timeit.default_timer()
 for k in range(max_iterations):
     
     ak = a / (A + k + 1) ** alpha
-    ck = c / (k + 1) ** gamma
+    ck = c / (C+ k + 1) ** gamma
     
     # Step 2 - Generation of simultaneous perturbation vector
 
