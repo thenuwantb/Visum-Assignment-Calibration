@@ -13,27 +13,25 @@ import pandas as pd
 import win32com.client as com
 import timeit
 
-
 # Load Visum Version and create a Network Object
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network"
 verFile = "Network_2_20200107_TJ_Final.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
-#save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\hp_set14_FDSA_10012020.csv"
+# save results 
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\5_ErrorChanged_RMSPE\\hp_set14_SPSA_far_13012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
 observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
 
-#todo rename the columns e.g. "variableName_Obs"
-changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs", 
+# todo rename the columns e.g. "variableName_Obs"
+changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
-observedStopPointDf = observedStopPointDf.rename(columns = changeColNamesDic)
-
+observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesDic)
 
 max_iterations = 300
 
@@ -42,10 +40,10 @@ gamma = 0.101
 c = 0.536258308408971
 a = 3.62503998020419
 A = 30.0
-C = 0 #added as an experiment - to control the behaviour of ck
+C = 0  # added as an experiment - to control the behaviour of ck
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [2.0, 2.8, 3.0, 1.0, 1.5, 2.0]
+initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
 
 initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
@@ -57,19 +55,18 @@ plot_dict = {0:[initial_cost, initial_guess]}
 u = np.copy(initial_guess)
 
 np.random.seed(55)
-#np.random.seed(100)
-#np.random.seed(159)
-#np.random.seed(486)
-#np.random.seed(999)
+# np.random.seed(100)
+# np.random.seed(159)
+# np.random.seed(486)
+# np.random.seed(999)
 
-
-#measure time - start
+# measure time - start
 t_start = timeit.default_timer()
 
 for k in range(max_iterations):
     
     ak = a / (A + k + 1) ** alpha
-    ck = c / (C+ k + 1) ** gamma
+    ck = c / (C + k + 1) ** gamma
     
     # Step 2 - Generation of simultaneous perturbation vector
 
@@ -90,7 +87,6 @@ for k in range(max_iterations):
             decrease_u[j] = u[j] - ck * deltaK[j]
         else:
             decrease_u[j] = u[j]
-    
     
     # Step 3 - Function evaluation
     cost_increase = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, increase_u)

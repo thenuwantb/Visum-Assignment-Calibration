@@ -288,11 +288,34 @@ def calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, estimate
     transferWaitTime_obs = comparisonTableDf['TransferWaitTime(AP)_Obs'].tolist()
     transferWaitTime_sim = comparisonTableDf['TransferWaitTime(AP)_Sim'].tolist()
     
-    passTransAlightWalkRMSN = ec.calculateRMSN(PassTransAlightWalk_obs, PassTransAlightWalk_sim)
-    passTransWalkBoardRMSN = ec.calculateRMSN(PassTransWalkBoard_obs, PassTransWalkBoard_sim)
-    transferWaitTimeRMSN = ec.calculateRMSN(transferWaitTime_obs, transferWaitTime_sim)
+    #===========================================================================
+    # passTransAlightWalkRMSN = ec.calculateRMSN(PassTransAlightWalk_obs, PassTransAlightWalk_sim)
+    # passTransWalkBoardRMSN = ec.calculateRMSN(PassTransWalkBoard_obs, PassTransWalkBoard_sim)
+    # transferWaitTimeRMSN = ec.calculateRMSN(transferWaitTime_obs, transferWaitTime_sim)
+    #===========================================================================
+    
+    passTransAlightWalkRMSPE = ec.calculateRMPSE(PassTransAlightWalk_obs, PassTransAlightWalk_sim)
+    passTransWalkBoardRMSPE = ec.calculateRMPSE(PassTransWalkBoard_obs, PassTransWalkBoard_sim)
+    transferWaitTimeRMSPE = ec.calculateRMPSE(transferWaitTime_obs, transferWaitTime_sim)
     
     
-    passTransRMSN = passTransAlightWalkRMSN + passTransWalkBoardRMSN + transferWaitTimeRMSN
+    #passTransRMSN = passTransAlightWalkRMSN + passTransWalkBoardRMSN + transferWaitTimeRMSN
+    passTransRMSPE = passTransAlightWalkRMSPE + passTransWalkBoardRMSPE + transferWaitTimeRMSPE
     
-    return passTransRMSN
+    return passTransRMSPE
+
+def createStopTransferWalkTimeDataFrame(Visum):
+    visumTransferWalkTime = Visum.Lists.CreateStopTransferWalkTimeList
+    visumTransferWalkTime.AddColumn("StopNo")
+    visumTransferWalkTime.AddColumn("FromStopAreaNo")
+    visumTransferWalkTime.AddColumn("ToStopAreaNo")
+    visumTransferWalkTime.AddColumn("PassTransTotal(AP)")
+    
+    visumTransferWalkTimeArray = visumTransferWalkTime.SaveToArray()
+    transferWalkTimeDf = pd.DataFrame(list(visumTransferWalkTimeArray), columns = ["StopNo", "FromStopAreaNo","ToStopAreaNo","PassTransTotal(AP)"])
+    
+    return transferWalkTimeDf
+    
+    
+    
+    
