@@ -32,7 +32,6 @@ def calculateRMPSE(observedList, simulatedList):
     sumOfDifferenceSquared = sum(differenceSquared)
     
     rmspe = math.sqrt(sumOfDifferenceSquared / len(differenceSquared))
-    # print rmspe
-    
+   
     return rmspe
     

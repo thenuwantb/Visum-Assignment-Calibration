@@ -6,6 +6,7 @@ Created on 9 Jan 2020
 from collections import OrderedDict
 from custom_visum_functions.open_close_visum import open_close as ocv
 from custom_visum_functions.visum_list_calculations import list_calculations as vlc
+from custom_visum_functions.visum_list_calculations import simulated_values_generator as sg
 from numpy import shape
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,36 +27,71 @@ ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
 changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
-
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesDic)
 
+observedTransferWalkTimeDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\Transfers_and_Walk_Times_Within_Stop_13012019.csv")
+changeColNamesTransferWalkTime = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs"}
+observedTransferWalkTimeDf = observedTransferWalkTimeDf.rename(columns=changeColNamesTransferWalkTime)
+
+observedConnectorVolumesDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\connectors_observed_14012019.csv")
+changeColNamesConnectors = {"VolPersPuT(AP)" : "VolPersPuT(AP)_Obs"}
+observedConnectorVolumesDf = observedConnectorVolumesDf.rename(columns = changeColNamesConnectors)
+
 plot_dict = OrderedDict()
-parameterValueList = np.arange(0 , 9.9, 0.1)
+parameterValueList = np.arange(0.0 , 9.9, 0.1)
 print type(parameterValueList)
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
 estimateList = [1.0, 2.0, 2.0, 1.5, 2.0, 3.0]
+titleList = ["In-Vehicle Time", "Access Time", "Egress Time", "Transfer Walk Time", "Origin Wait Time", "Transfer Wait Time"]
+
+#===============================================================================
+# fig, axes = plt.subplots(nrows = 2, ncols = 3)
+# fig.subplots_adjust(hspace = 0.5)
+# fig.suptitle('Sensitivity of the Objective Function')
+#===============================================================================
+
+#===============================================================================
+# for count, plotTitle in enumerate(titleList):
+#     axes[count]
+#     plt.show()
+#     
+#===============================================================================
  
 for i in range(len(parameterValueList)):
-    print i
+    #print i
     estimateList[5] = parameterValueList[i]
-      
-    rmsnValue = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, estimateList)
-      
+     
+    print estimateList
+       
+    rmsnValue = sg.runAssignmentCalculateErrorRMSN(Visum, estimateList, observedStopPointDf, observedTransferWalkTimeDf)
+       
     plot_dict[i] = rmsnValue
-      
+       
 # creation of the plot
 coefficient_values = parameterValueList.tolist()
 rmsn_values = []
-  
+   
 for key, value in plot_dict.items():
     rmsn_values.append(value)
-      
+ 
+ 
+
+#plt.xlim(-1, 10)
+#plt.ylim(-1, 10)
+ 
+#customize the grid
+
+fig, ax = plt.subplots()
+
 plt.plot(coefficient_values, rmsn_values)
-plt.xlim(-1, 10)
-plt.ylim(-1, 10)
+ax.set_xticks(np.arange(-1, 9.9, 0.5))
+ax.set_yticks(np.arange(-1, 5.5, 0.5))
+ax.grid(which = 'major', linestyle = '-', linewidth = '0.5')
+ax.grid(which = 'minor', linestyle = '-', linewidth = '0.2')
 
-plt.title("RMSN with change of Transfer Wait Time coefficient")
-
+ 
+plt.title("Origin Wait Time")
+ 
 plt.show()
      

@@ -6,6 +6,7 @@ Created on 8 Jan 2020
 from collections import OrderedDict
 from custom_visum_functions.open_close_visum import open_close as ocv
 from custom_visum_functions.visum_list_calculations import list_calculations as vlc
+from custom_visum_functions.visum_list_calculations import simulated_values_generator as sg
 import matplotlib.pyplot as plt
 import numpy as np
 import os.path
@@ -20,33 +21,36 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\5_ErrorChanged_RMSPE\\hp_set14_SPSA_far_13012020.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\10_hyper_parameter_set_17\\hp_set17_SPSA_far_15012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
 observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
 
-# todo rename the columns e.g. "variableName_Obs"
-changeColNamesDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
+changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
-observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesDic)
+observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
+
+observedTransferWalkTimeDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\Transfers_and_Walk_Times_Within_Stop_13012019.csv")
+changeColNamesTransferWalkTime = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs"}
+observedTransferWalkTimeDf = observedTransferWalkTimeDf.rename(columns=changeColNamesTransferWalkTime)
 
 max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 0.536258308408971
-a = 3.62503998020419
+c = 0.6
+a = 3.7
 A = 30.0
-C = 0  # added as an experiment - to control the behaviour of ck
+C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
 initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
-initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
+initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, observedStopPointDf, observedTransferWalkTimeDf)
 
-initial_cost = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, initial_guess)
+initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, observedStopPointDf, observedTransferWalkTimeDf)
 
 print initial_guess, initial_cost
 plot_dict = OrderedDict()
@@ -89,8 +93,8 @@ for k in range(max_iterations):
             decrease_u[j] = u[j]
     
     # Step 3 - Function evaluation
-    cost_increase = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, increase_u)
-    cost_decrease = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, decrease_u)
+    cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, observedStopPointDf, observedTransferWalkTimeDf)
+    cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, observedStopPointDf, observedTransferWalkTimeDf)
     
     # Step 4 - Gradient approximation
     gk = np.dot((cost_increase - cost_decrease) / (2.0 * ck), deltaK)

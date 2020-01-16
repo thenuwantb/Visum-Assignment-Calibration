@@ -315,6 +315,18 @@ def createStopTransferWalkTimeDataFrame(Visum):
     transferWalkTimeDf = pd.DataFrame(list(visumTransferWalkTimeArray), columns = ["StopNo", "FromStopAreaNo","ToStopAreaNo","PassTransTotal(AP)"])
     
     return transferWalkTimeDf
+
+def createConnectorListDataFrame(Visum):
+    visumConnectors = Visum.Lists.CreateConnectorList
+    visumConnectors.AddColumn("ZoneNo")
+    visumConnectors.AddColumn("NodeNo")
+    visumConnectors.AddColumn("Direction")
+    visumConnectors.AddColumn("VolPersPuT(AP)")
+    
+    visumConnectorsArray = visumConnectors.SaveToArray()
+    connectorsDf = pd.DataFrame(list(visumConnectorsArray), columns = ["ZoneNo", "NodeNo", "Direction", "VolPersPuT(AP)"])
+    
+    return connectorsDf
     
     
     

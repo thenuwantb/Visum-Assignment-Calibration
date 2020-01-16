@@ -5,8 +5,8 @@ Created on 18 Dec 2019
 '''
 import pandas as pd
 
-load_file  = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\hp_set14_SPSA_far_13012020.csv"
-save_file = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\hp_set14_SPSA_far_13012020_cleaned.csv"
+load_file  = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\hp_set16_FDSA_close_14012020.csv"
+save_file = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\hp_set16_FDSA_close_14012020_cleaned.csv"
 
 resultsdf = pd.read_csv(load_file)
 print resultsdf.head()

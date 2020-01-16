@@ -10,11 +10,11 @@ import itertools
 #This is to compare FDSA and SPSA with far estimates and close estimates - altogether 4 line plots in one plot
 #load csvs as dataframes
  
-spsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\cleaned_results\\hp_set14_SPSA_13012020_cleaned.csv")
-fdsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\cleaned_results\\hp_set14_FDSA_13012020_cleaned.csv")
+spsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_SPSA_close_14012020_cleaned.csv")
+fdsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_FDSA_close_14012020_cleaned.csv")
 
-spsa_far_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\cleaned_results\\hp_set14_SPSA_far_13012020_cleaned.csv")
-fdsa_far_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\4_Improved_ObjectiveFunction\\cleaned_results\\hp_set14_FDSA_far_10012020_cleaned.csv")
+spsa_far_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_SPSA_far_14012020_cleaned.csv")
+fdsa_far_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_FDSA_far_14012020_cleaned.csv")
  
 iteration_list = fdsa_close_df.Iteration.tolist()
  
