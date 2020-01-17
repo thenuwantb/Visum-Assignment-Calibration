@@ -58,22 +58,26 @@ ff_transferWaitTime_est = fdsa_far_df.transferWaitTime_est.tolist()
 _prior = list(itertools.repeat(3.0,301))
     
 
-_ = plt.plot(iteration_list, sc_transferWaitTime_est, linestyle = '--', linewidth = 1, color = 'red', label = 'SPSA close')
-_ = plt.plot(iteration_list, sf_transferWaitTime_est, linestyle = '--',linewidth = 1, color = 'darkorange', label = 'SPSA far')
-_ = plt.plot(iteration_list, fc_transferWaitTime_est, linewidth = 1, color = 'royalblue', label = 'FDSA close')
-_ = plt.plot(iteration_list, ff_transferWaitTime_est, linewidth = 1, color = 'seagreen', label = 'FDSA far')
+_ = plt.plot(iteration_list, sc_transferWaitTime_est, linestyle = '--', linewidth = 1, color = 'red', label = 'SPSA')
+#_ = plt.plot(iteration_list, sf_transferWaitTime_est, linestyle = '--',linewidth = 1, color = 'darkorange', label = 'SPSA far')
+_ = plt.plot(iteration_list, fc_transferWaitTime_est, linewidth = 1, color = 'royalblue', label = 'FDSA')
+#_ = plt.plot(iteration_list, ff_transferWaitTime_est, linewidth = 1, color = 'seagreen', label = 'FDSA far')
 
-_ = plt.plot(iteration_list, _prior, linestyle = '-.', linewidth = 0.75, color = 'dimgray', label = 'Target')
+_ = plt.plot(iteration_list, _prior, linestyle = '-.', linewidth = 0.75, color = 'dimgray', label = 'Observed Value')
  
  
 _ = plt.xlabel("Iteration")
 _ = plt.ylabel('Estimated value the coefficient')
-_ = plt.suptitle("Change of Transfer Wait Time Coefficient")
+_ = plt.suptitle("Change of Origin Wait Time Coefficient")
 #_ = plt.title("Close Estimates", fontsize = 10)
  
 _ = plt.legend()
      
-plt.show()
+#plt.show()
+savepath = 'C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\sensitivity_analysis\\17012020 - report to Moeid\\coef_transferWait.svg'
+plt.draw()
+#plt.show()
+plt.savefig(savepath, bbox_inches = 'tight')   
 
 
 

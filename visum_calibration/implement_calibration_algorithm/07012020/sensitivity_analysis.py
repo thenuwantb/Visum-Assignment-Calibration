@@ -85,13 +85,17 @@ for key, value in plot_dict.items():
 fig, ax = plt.subplots()
 
 plt.plot(coefficient_values, rmsn_values)
-ax.set_xticks(np.arange(-1, 9.9, 0.5))
-ax.set_yticks(np.arange(-1, 5.5, 0.5))
+ax.set_xticks(np.arange(0, 10.0, 1))
+ax.set_yticks(np.arange(0, 5.5, 0.5))
 ax.grid(which = 'major', linestyle = '-', linewidth = '0.5')
 ax.grid(which = 'minor', linestyle = '-', linewidth = '0.2')
 
- 
-plt.title("Origin Wait Time")
- 
-plt.show()
-     
+plt.xlabel("Coefficient value of the parameter", fontsize = 10)
+plt.ylabel("RMSN", fontsize = 10)
+plt.title("Transfer Wait Time", fontsize = 12)
+
+
+savepath = 'C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\sensitivity_analysis\\17012020 - report to Moeid\\transfer_wait.svg'
+plt.draw()
+#plt.show()
+plt.savefig(savepath, bbox_inches = 'tight')     
