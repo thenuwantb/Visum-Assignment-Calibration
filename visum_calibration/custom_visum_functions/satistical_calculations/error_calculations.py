@@ -34,4 +34,12 @@ def calculateRMPSE(observedList, simulatedList):
     rmspe = math.sqrt(sumOfDifferenceSquared / len(differenceSquared))
    
     return rmspe
+
+def calculateABS(observedList, simulatedList):
+    differenceList = [abs(sim_i - obs_i) for obs_i, sim_i in zip(observedList, simulatedList)]
+    differenceListDivObs = [diff_i / obs_i if obs_i != 0 else 0 for diff_i, obs_i in zip(differenceList, observedList)]
+    sumOfDifferenceList = sum(differenceListDivObs)
+    
+    return sumOfDifferenceList
+    
     

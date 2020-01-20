@@ -44,19 +44,6 @@ print type(parameterValueList)
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
 estimateList = [1.0, 2.0, 2.0, 1.5, 2.0, 3.0]
 titleList = ["In-Vehicle Time", "Access Time", "Egress Time", "Transfer Walk Time", "Origin Wait Time", "Transfer Wait Time"]
-
-#===============================================================================
-# fig, axes = plt.subplots(nrows = 2, ncols = 3)
-# fig.subplots_adjust(hspace = 0.5)
-# fig.suptitle('Sensitivity of the Objective Function')
-#===============================================================================
-
-#===============================================================================
-# for count, plotTitle in enumerate(titleList):
-#     axes[count]
-#     plt.show()
-#     
-#===============================================================================
  
 for i in range(len(parameterValueList)):
     #print i
@@ -74,12 +61,7 @@ rmsn_values = []
    
 for key, value in plot_dict.items():
     rmsn_values.append(value)
- 
- 
-
-#plt.xlim(-1, 10)
-#plt.ylim(-1, 10)
- 
+  
 #customize the grid
 
 fig, ax = plt.subplots()

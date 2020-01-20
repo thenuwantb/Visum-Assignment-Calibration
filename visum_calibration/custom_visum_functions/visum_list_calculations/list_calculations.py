@@ -10,10 +10,6 @@ import xml.etree.ElementTree as ET
 import custom_visum_functions.satistical_calculations.error_calculations as ec
 
 
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\1_VISUM_Simple"
-verFile = "2_Simple_Network.ver"
-versionPath = os.path.join(path, verFile)
-
 
 def totalPaxKmTravelAP(Visum):
     lineRouteList = Visum.Lists.CreateLineList
@@ -327,6 +323,19 @@ def createConnectorListDataFrame(Visum):
     connectorsDf = pd.DataFrame(list(visumConnectorsArray), columns = ["ZoneNo", "NodeNo", "Direction", "VolPersPuT(AP)"])
     
     return connectorsDf
+
+def createLineRouteListDataFrame(Visum):
+    visumLineRoutes = Visum.Lists.CreateLineRouteList
+    visumLineRoutes.AddColumn("LineName")
+    visumLineRoutes.AddColumn("Name")
+    visumLineRoutes.AddColumn("DirectionCode")
+    visumLineRoutes.AddColumn("PTripsUnlinked0(AP)")
+    visumLineRoutes.AddColumn("PTripsUnlinked1(AP)")
+    
+    visumLineRoutesArray = visumLineRoutes.SaveToArray()
+    lineRouteDf = pd.DataFrame(list(visumLineRoutesArray), columns = ["LineName", "Name", "DirectionCode", "PTripsUnlinked0(AP)", "PTripsUnlinked1(AP)"])
+    
+    return lineRouteDf
     
     
     
