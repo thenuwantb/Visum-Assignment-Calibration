@@ -17,41 +17,43 @@ import win32com.client as com
 import timeit
 
 # Load Visum Version and create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network"
-verFile = "Network_2_20200107_TJ_Final.ver"
+path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network"
+verFile = "Network_2.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\10_hyper_parameter_set_17\\hp_set17_FDSA_far_15012020.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\3_hp_set_19\\hp_set19_FDSA_far_20012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
 
 changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
 
-observedTransferWalkTimeDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\Transfers_and_Walk_Times_Within_Stop_13012019.csv")
-changeColNamesTransferWalkTime = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs"}
-observedTransferWalkTimeDf = observedTransferWalkTimeDf.rename(columns=changeColNamesTransferWalkTime)
+observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network\\line_route_observed_19012020.csv")
+changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", "PTripsUnlinked1(AP)" : "PTripsUnlinked1(AP)_Obs"}
+observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
+observedRouteListDf["LineName"] = observedRouteListDf["LineName"].astype(str)
+observedRouteListDf["Name"] = observedRouteListDf["Name"].astype(str)
 
 max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
 c = 0.6
-a = 3.7
+a = 3.3
 A = 30.0
 C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [2.0, 2.8, 3.0, 1.0, 1.5, 2.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0]
-initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, observedStopPointDf, observedTransferWalkTimeDf)
+initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
+initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 
 print initial_guess, initial_cost
 plot_dict = OrderedDict()
@@ -84,9 +86,9 @@ for k in range(max_iterations):
         
         # Step 3: Function evaluation
 
-        cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, observedStopPointDf, observedTransferWalkTimeDf)
+        cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
     
-        cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, observedStopPointDf, observedTransferWalkTimeDf)
+        cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
         
         # Step 4: Gradient Approximation
         gk[i] = (cost_increase - cost_decrease) / (2.0 * ck)
@@ -105,7 +107,8 @@ for k in range(max_iterations):
             print m
             print "xx"
     
-    cost_new = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, u)
+    #cost_new = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, u)
+    cost_new = sg.runAssignmentCalculateErrorRMSN(Visum, u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
     
     print k
     print cost_new

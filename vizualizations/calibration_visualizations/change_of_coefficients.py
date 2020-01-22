@@ -10,8 +10,8 @@ import itertools
 #This is to compare FDSA and SPSA with far estimates and close estimates - altogether 4 line plots in one plot
 #load csvs as dataframes
  
-spsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_SPSA_close_14012020_cleaned.csv")
-fdsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_FDSA_close_14012020_cleaned.csv")
+spsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\2_hp_set_18\\hp_set18_SPSA_close_20012020_cleaned.csv")
+fdsa_close_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\2_hp_set_18\\hp_set18_FDSA_close_20012020_cleaned.csv")
 
 spsa_far_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_SPSA_far_14012020_cleaned.csv")
 fdsa_far_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\9_hyper_parameter_set_16\\cleaned_data\\hp_set16_FDSA_far_14012020_cleaned.csv")
@@ -59,7 +59,7 @@ _prior = list(itertools.repeat(3.0,301))
     
 
 _ = plt.plot(iteration_list, sc_transferWaitTime_est, linestyle = '--', linewidth = 1, color = 'red', label = 'SPSA')
-#_ = plt.plot(iteration_list, sf_transferWaitTime_est, linestyle = '--',linewidth = 1, color = 'darkorange', label = 'SPSA far')
+#_ = plt.plot(iteration_list, sf_inVeicle_est, linestyle = '--',linewidth = 1, color = 'darkorange', label = 'SPSA far')
 _ = plt.plot(iteration_list, fc_transferWaitTime_est, linewidth = 1, color = 'royalblue', label = 'FDSA')
 #_ = plt.plot(iteration_list, ff_transferWaitTime_est, linewidth = 1, color = 'seagreen', label = 'FDSA far')
 
@@ -68,13 +68,13 @@ _ = plt.plot(iteration_list, _prior, linestyle = '-.', linewidth = 0.75, color =
  
 _ = plt.xlabel("Iteration")
 _ = plt.ylabel('Estimated value the coefficient')
-_ = plt.suptitle("Change of Origin Wait Time Coefficient")
+_ = plt.suptitle("Change of Transfer Wait Time Coefficient")
 #_ = plt.title("Close Estimates", fontsize = 10)
  
 _ = plt.legend()
      
 #plt.show()
-savepath = 'C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\sensitivity_analysis\\17012020 - report to Moeid\\coef_transferWait.svg'
+savepath = 'C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\2_hp_set_18\\transferWait.svg'
 plt.draw()
 #plt.show()
 plt.savefig(savepath, bbox_inches = 'tight')   

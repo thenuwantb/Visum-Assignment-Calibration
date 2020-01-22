@@ -17,20 +17,20 @@ import timeit
 import copy
 
 # Load Visum Version and create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network"
-verFile = "Network_2_20200107_TJ_Final.ver"
+path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network"
+verFile = "Mumford1_100_100_0.9_0.005_50_itr6_itrcap6_Solution_3.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network\\stopPoint_observed.csv")
 changeColNamesDic_stopPoints = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesDic_stopPoints)
 
-observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network\\line_route_observed_19012020.csv")
+observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network\\lineRoute_observed.csv")
 changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", "PTripsUnlinked1(AP)" : "PTripsUnlinked1(AP)_Obs"}
 observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
 
@@ -50,7 +50,7 @@ observedRouteListDf["Name"] = observedRouteListDf["Name"].astype(str)
 #Create dataframe and assign values
 df_rmsn_columns = ['coefficient', 'inVeh','access', 'egress', 'traWalk', 'oriWait', 'traWait']
 df_rmsn = pd.DataFrame(columns = df_rmsn_columns)
-parameterValueList = (np.arange(0.0 , 9.9, 1)).tolist()
+parameterValueList = (np.arange(0.0 , 9.9, 0.1)).tolist()
 
 parameterValueSeries = pd.Series(parameterValueList)
 
@@ -64,13 +64,14 @@ estimateList = [1.0, 2.0, 2.0, 1.5, 2.0, 3.0]
 
 for estimate in range(len(estimateList)):
     estimates = copy.copy(estimateList)
-    print estimates
+    #print estimates
     
     for i in range(len(parameterValueList)):
-        print i
+        #print i
         
         estimates[estimate] = parameterValueList[i]
-        rmsnValue = sg.runAssignmentCalculateErrorRMSN(Visum, estimates, observedStopPointDf, observedRouteListDf)
+        print estimates
+        rmsnValue = sg.runAssignmentCalculateErrorRMSN(Visum, estimates, obsStopPoints = observedStopPointDf, obsLineRoutes = observedRouteListDf)
         df_rmsn.at[i, df_rmsn_columns[estimate+1]] = rmsnValue
         
 #===============================================================================
@@ -86,7 +87,7 @@ fig, axes = plt.subplots(nrows = 2, ncols = 3)
 
 
 xlim = (0, 10)
-ylim = (0, 8)
+ylim = (0, 15)
 
 
 #axes.grid(which = 'major', linestyle = '-', linewidth = '0.5')
