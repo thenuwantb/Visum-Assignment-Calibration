@@ -4,10 +4,13 @@ Created on 23 Jan 2020
 @author: thenuwan.jayasinghe
 @note: Implementing adaptive step size with FDSA algorithm - Ito, Keiichi; Dhaene, Tom (2016)
 '''
+
 from collections import OrderedDict
 from custom_visum_functions.open_close_visum import open_close as ocv
 from custom_visum_functions.visum_list_calculations import list_calculations as vlc
 from custom_visum_functions.visum_list_calculations import simulated_values_generator as sg
+
+from numpy import shape
 import matplotlib.pyplot as plt
 import numpy as np
 import os.path
@@ -22,7 +25,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\23012020_adaptive_step\\results\\4_Mumford1\\1_hp_set_23\\hp_set_23_spsa_as.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\23012020_adaptive_step\\results\\4_Mumford1\\1_hp_set_23\\hp_set_23_fdsa_as.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -39,7 +42,6 @@ changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", 
 observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
 observedRouteListDf["LineName"] = observedRouteListDf["LineName"].astype(str)
 observedRouteListDf["Name"] = observedRouteListDf["Name"].astype(str)
-
 max_iterations = 300
 
 alpha = 0.602
@@ -47,13 +49,16 @@ gamma = 0.101
 c = 0.268129154204486
 a = 0.25
 A = 5.0
-C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
+C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
+
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [0.89246464, 2.82970775, 1.82521672]  # solution = [1.0, 2.0, 3.0]
+initial_guess = [0.89246464, 2.82970775, 1.82521672]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-print initial_guess, initial_cost
 
+#Tracking the test value for the objective function
+
+print initial_guess, initial_cost
 plot_dict = OrderedDict()
 plot_dict = {0:[initial_cost, initial_guess]}
 
@@ -61,103 +66,92 @@ current_estimate = np.copy(initial_guess)
 best_estimate = np.copy(initial_guess)
 best_rmsn = np.copy(initial_cost)
 
-np.random.seed(55)
-
 # measure time - start
 t_start = timeit.default_timer()
 
 for k in range(max_iterations):
     
-    ak = a / (A + k + 1) ** alpha
-    ck = c / (C + k + 1) ** gamma
+    ak = a / ((A + k + 1) ** alpha)
+    ck = c / ((C + k + 1) ** gamma)
     
-    # Step 2 - Generation of simultaneous perturbation vector
+    gk = np.zeros(shape(current_estimate)[0])
+    
+    for i in range(shape(gk)[0]):
+        
+        # Step 2: Generate perturbations one parameter at a time. 
+        
+        increase_u = np.copy(current_estimate)
+        
+        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9 :
+            increase_u[i] += ck
+        
+        decrease_u = np.copy(current_estimate)
+        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9 :
+            decrease_u[i] -= ck
+        
+        # Step 3: Function evaluation
 
-    deltaK = np.random.choice([-1, 1], size=len(current_estimate), p=[0.5, 0.5])  # delta_k = np.array([1,-1])
+        cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
     
-    # looping over each element and check whether it is in range (0,9) after the change
-    increase_u = np.copy(current_estimate)
-    decrease_u = np.copy(current_estimate)
-    
-    for i in range(len(increase_u)):
-        if current_estimate[i] + ck * deltaK[i] > 0 and current_estimate[i] + ck * deltaK[i] <= 9.9:
-            increase_u[i] = current_estimate[i] + ck * deltaK[i]
-        else:
-            increase_u[i] = current_estimate[i]
-    
-    for j in range(len(decrease_u)):
-        if current_estimate[j] - ck * deltaK[j] > 0 and current_estimate[j] - ck * deltaK[j] <= 9.9:
-            decrease_u[j] = current_estimate[j] - ck * deltaK[j]
-        else:
-            decrease_u[j] = current_estimate[j]
-    
-    # Step 3 - Function evaluation
-    cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    
-    # Step 4 - Gradient approximation
-    gk = np.dot((cost_increase - cost_decrease) / (2.0 * ck), deltaK)
-    #print gk
-    
-    # Step 5 - Update current_estimate estimate
+        cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
+        
+        # Step 4: Gradient Approximation
+        gk[i] = (cost_increase - cost_decrease) / (2.0 * ck)
+        
     previous_estimate = np.copy(current_estimate)
-    
-    #--------------fix 05122019---------------------------------
     gk_step_size = ak * gk
     
-    if (min(cost_increase, cost_decrease) - initial_cost*2) >= 0:
-        current_estimate = np.copy(best_estimate)
-        a = a*0.5
-        c = c*0.5
-        print "xxx"
-    else:
-        
-        for m in range(len(previous_estimate)):
-            if previous_estimate[m] - gk_step_size[m] >= 0 and previous_estimate[m] - gk_step_size[m] <= 9.9:
-                current_estimate[m] = previous_estimate[m] - gk_step_size[m]
+    # Step 5 : Update current_estimate estimate
     
-            else:
-                current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
+    
+    for m in range(len(previous_estimate)):
+        if previous_estimate[m] - gk_step_size[m] >= 0 and previous_estimate[m] - gk_step_size[m] <= 9.9:
+            current_estimate[m] = previous_estimate[m] - gk_step_size[m] 
             
-            
+        else:
+            current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
+            #print m
+    
     cost_new = sg.runAssignmentCalculateErrorRMSN(Visum, current_estimate, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    #--------------fix 05122019---------------------------------
     
     if cost_new < best_rmsn:
         best_rmsn = cost_new
         best_estimate = np.copy(current_estimate) 
     
+    
+    
     print k
     print cost_new
     print current_estimate
     print best_estimate
+    #print best_rmsn
     
     estimate_to_dict = np.copy(current_estimate)
-    
     plot_dict[k + 1] = [cost_new, estimate_to_dict]
-
+    
 t_duration = timeit.default_timer() - t_start
 print "Duration = " + str(t_duration)
 
 # saving values to a Data Frame
 results_df = pd.DataFrame()
 
-# Creation of the plot - and then save the values to a Data Frame  - change made on 10122019
+# Creation of the plot
 iteration_id = []
 cost_value = []
 estimate_list = []
+
 for key, value in plot_dict.items():
     iteration_id.append(key)
     cost_value.append(value[0])
     estimate_list.append(value[1])
-    
+
 results_df['Iteration'] = iteration_id
 results_df['RMSN'] = cost_value
 results_df['estimate'] = estimate_list
 
 results_df.to_csv(result_df_save_as)
-
-# Plot
+    
+# print y_val
 plt.plot(iteration_id, cost_value)
 plt.xlabel("Number of Iterations")
 plt.ylabel("RMSN")
