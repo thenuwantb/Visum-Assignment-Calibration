@@ -18,6 +18,7 @@ Visum.LoadVersion(versionPath)
 
 Net = Visum.Net
 
+
 linktype20 = Net.AddLinkType(20)
 linktype20.SetAttValue("TSYSSET", "B")
 
