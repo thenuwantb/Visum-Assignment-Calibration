@@ -16,13 +16,13 @@ import win32com.client as com
 import timeit
 
 # Load Visum Version and create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\24012020_adaptive_step_a_parameter_weights"
+path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients"
 verFile = "network\\network2\\Network_2.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-results_save = "results\\1_hp_set_19\\hp_set_19_spsa_result_of_far_para_weight_as"
+results_save = "results\\1_net_2_hp_13_ob_1\\spsa_aStep_weight_close_28012020.csv"
 result_df_save_as = os.path.join(path, results_save)
 
 # load Visum file
@@ -45,13 +45,13 @@ max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 0.6
-a = 3.3
+c = 1.419123356
+a = 4.83338664027225
 A = 30.0
 C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [2.18789207, 5.28255236, 6.48348328, 2.10458348, 3.32373763, 6.08081839]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
+initial_guess = [2.0, 2.8, 3.0, 1.0, 1.5, 2.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 parameter_weights = [0.263847468, 1.0, 0.527366201, 0.929654002, 0.521260619, 0.510245914]  #calculated based on standard deviation of each parameter from the sensitivity analysis
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 print initial_guess, initial_cost
@@ -103,26 +103,36 @@ for k in range(max_iterations):
     # Step 5 - Update current_estimate estimate
     previous_estimate = np.copy(current_estimate)
     
-    #--------------fix 05122019---------------------------------
+    
     gk_step_size = ak * gk
     gk_step_size_weights = [gk * weight for gk, weight in zip(gk_step_size, parameter_weights)]
     
-    if (min(cost_increase, cost_decrease) - 2*initial_cost) >= 0:
+    
+    #===========================================================================
+    # for m in range(len(previous_estimate)):
+    #         if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
+    #             current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m]
+    #  
+    #         else:
+    #             current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
+    #===========================================================================
+                
+    if (min(cost_increase, cost_decrease) - initial_cost) >= 0:
         current_estimate = np.copy(best_estimate)
         a = a*0.5
         print "xxx"
     else:
-        
+          
         for m in range(len(previous_estimate)):
             if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
                 current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m]
-    
+      
             else:
                 current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
             
             
     cost_new = sg.runAssignmentCalculateErrorRMSN(Visum, current_estimate, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    #--------------fix 05122019---------------------------------
+    
     
     if cost_new < best_rmsn:
         best_rmsn = cost_new

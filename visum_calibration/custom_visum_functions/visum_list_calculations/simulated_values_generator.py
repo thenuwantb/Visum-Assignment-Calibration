@@ -52,8 +52,8 @@ def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineR
     pTripsUnlinked1_sim = lineRoute_merged["PTripsUnlinked1(AP)_Sim"].tolist()
     
     #calculate RMSN
-    #passTransWalkBoard_rmsn = ec.calculateRMSN(passTransWalkBoard_obs, passTransWalkBoard_sim)
-    #passTransAlightWalk_rmsn = ec.calculateRMSN(passTransAlightWalk_obs, passTransAlightWalk_sim)
+    passTransWalkBoard_rmsn = ec.calculateRMSN(passTransWalkBoard_obs, passTransWalkBoard_sim)
+    passTransAlightWalk_rmsn = ec.calculateRMSN(passTransAlightWalk_obs, passTransAlightWalk_sim)
     passTransTotal_rmsn = ec.calculateRMSN(passTransTotal_obs, passTransTotal_sim)
     #transferWaitTime_rmsn = ec.calculateRMSN(transferWaitTime_obs, transferWaitTime_sim)
     #passTransWalk_rmsn = ec.calculateRMSN(passTransWalk_obs, passTransWalk_sim)
@@ -66,7 +66,7 @@ def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineR
     #pTripsUnlinked0_rmpse = ec.calculateRMPSE(pTripsUnlinked0_obs, pTripsUnlinked0_sim)
     #pTripsUnlinked1_rmpse = ec.calculateRMPSE(pTripsUnlinked1_obs, pTripsUnlinked1_sim)
     
-    total_rmsn = pTripsUnlinked0_abs + pTripsUnlinked1_abs + passTransTotal_rmsn
+    total_rmsn = pTripsUnlinked0_abs + pTripsUnlinked1_abs + passTransAlightWalk_rmsn + passTransWalkBoard_rmsn #ob1
     return total_rmsn
     
     

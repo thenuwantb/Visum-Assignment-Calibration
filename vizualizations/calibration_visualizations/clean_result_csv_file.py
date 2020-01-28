@@ -5,8 +5,8 @@ Created on 18 Dec 2019
 '''
 import pandas as pd
 
-load_file  = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\2_hp_set_18\\hp_set18_FDSA_close_20012020.csv"
-save_file = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\2_hp_set_18\\hp_set18_FDSA_close_20012020_cleaned.csv"
+load_file  = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\23012020_adaptive_step\\results\\1_hp_set_13\\hp_set_13_spsa_as.csv"
+save_file = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\23012020_adaptive_step\\results\\1_hp_set_13\\hp_set_13_spsa_as_cleaned.csv"
 
 resultsdf = pd.read_csv(load_file)
 print resultsdf.head()

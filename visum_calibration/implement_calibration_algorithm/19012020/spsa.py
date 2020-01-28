@@ -16,25 +16,25 @@ import win32com.client as com
 import timeit
 
 # Load Visum Version and create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network"
+path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\network2"
 verFile = "Network_2.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\results\\2_hp_set_18\\hp_set18_SPSA_close_20012020.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\spsa_vanila_close_28012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\network2\\stop_point_obs.csv")
 
 changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
 
-observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\19012020\\network\\line_route_observed_19012020.csv")
+observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\network2\\line_route_obs.csv")
 changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", "PTripsUnlinked1(AP)" : "PTripsUnlinked1(AP)_Obs"}
 observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
 observedRouteListDf["LineName"] = observedRouteListDf["LineName"].astype(str)
@@ -44,8 +44,8 @@ max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 0.321754985
-a = 1.61112888009075
+c = 1.419123356
+a = 4.83338664027225
 A = 30.0
 C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
