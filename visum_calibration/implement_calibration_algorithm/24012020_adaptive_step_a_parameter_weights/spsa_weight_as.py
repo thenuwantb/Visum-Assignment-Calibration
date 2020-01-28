@@ -25,6 +25,7 @@ Visum = com.Dispatch("Visum.Visum.180")
 results_save = "results\\1_net_2_hp_13_ob_1\\spsa_aStep_weight_close_28012020.csv"
 result_df_save_as = os.path.join(path, results_save)
 
+
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
