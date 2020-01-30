@@ -1,10 +1,8 @@
 '''
-Created on 23 Jan 2020
+Created on 19 Jan 2020
 
 @author: thenuwan.jayasinghe
-@note: Implementing adaptive step size with FDSA algorithm - Ito, Keiichi; Dhaene, Tom (2016)
 '''
-
 from collections import OrderedDict
 from custom_visum_functions.open_close_visum import open_close as ocv
 from custom_visum_functions.visum_list_calculations import list_calculations as vlc
@@ -19,26 +17,25 @@ import win32com.client as com
 import timeit
 
 # Load Visum Version and create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients"
-verFile = "network\\network2\\Network_2.ver"
+path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\network2"
+verFile = "Network_2.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-results_save = "results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_weight_far.csv"
-result_df_save_as = os.path.join(path, results_save)
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_vanila_far.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv(os.path.join(path, "network\\network2\\stop_point_obs.csv"))
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\network2\\stop_point_obs.csv")
 
 changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
 
-observedRouteListDf = pd.read_csv(os.path.join(path, "network\\network2\\line_route_obs.csv"))
+observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\network2\\line_route_obs.csv")
 changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", "PTripsUnlinked1(AP)" : "PTripsUnlinked1(AP)_Obs"}
 observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
 observedRouteListDf["LineName"] = observedRouteListDf["LineName"].astype(str)
@@ -53,12 +50,10 @@ a = 4.83338664027225
 A = 30.0
 C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
-# Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
-parameter_weights = [0.263847468, 1.0, 0.527366201, 0.929654002, 0.521260619, 0.510245914] #calculated based on standard deviation of each parameter from the sensitivity analysis
-initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 
-#Tracking the test value for the objective function
+# Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
+initial_guess = [2.0, 2.8, 3.0, 1.0, 1.5, 2.0]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
+initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 
 print initial_guess, initial_cost
 plot_dict = OrderedDict()
@@ -84,12 +79,12 @@ for k in range(max_iterations):
         
         increase_u = np.copy(current_estimate)
         
-        if increase_u[i] + ck*parameter_weights[i] >= 0 and increase_u[i] + ck*parameter_weights[i] <= 9.9 :
-            increase_u[i] += ck*parameter_weights[i]
+        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9 :
+            increase_u[i] += ck
         
         decrease_u = np.copy(current_estimate)
-        if decrease_u[i] - ck*parameter_weights[i] >= 0 and decrease_u[i] - ck*parameter_weights[i] <= 9.9 :
-            decrease_u[i] -= ck*parameter_weights[i]
+        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9 :
+            decrease_u[i] -= ck
         
         # Step 3: Function evaluation
 
@@ -102,31 +97,27 @@ for k in range(max_iterations):
         
     previous_estimate = np.copy(current_estimate)
     gk_step_size = ak * gk
-    gk_step_size_weights = [gk * weight for gk, weight in zip(gk_step_size, parameter_weights)]
     
     # Step 5 : Update current_estimate estimate
     
-    
     for m in range(len(previous_estimate)):
-        if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
-            current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m] 
+        if previous_estimate[m] - gk_step_size[m] >= 0 and previous_estimate[m] - gk_step_size[m] <= 9.9:
+            current_estimate[m] = previous_estimate[m] - gk_step_size[m]
             
         else:
-            current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
-            #print m
+            current_estimate[m] = best_estimate[m]
+            
+            print "xx"
     
     cost_new = sg.runAssignmentCalculateErrorRMSN(Visum, current_estimate, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
     
     if cost_new < best_rmsn:
         best_rmsn = cost_new
         best_estimate = np.copy(current_estimate) 
-    
-    
-    
+        
     print k
     print cost_new
     print current_estimate
-    #print "Best Values"
     
     print best_estimate
     #print best_rmsn

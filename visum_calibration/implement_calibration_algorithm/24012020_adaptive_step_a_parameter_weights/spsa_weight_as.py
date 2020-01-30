@@ -22,7 +22,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-results_save = "results\\1_net_2_hp_13_ob_1\\spsa_aStep_weight_far_28012020.csv"
+results_save = "results\\1_net_2_hp_13_ob_1\\spsa_aStep_weight_far_28012020oo.csv"
 result_df_save_as = os.path.join(path, results_save)
 
 
