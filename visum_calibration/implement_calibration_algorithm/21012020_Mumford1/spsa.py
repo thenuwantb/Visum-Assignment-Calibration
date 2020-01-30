@@ -15,25 +15,25 @@ import win32com.client as com
 import timeit
 
 # Load Visum Version and create a Network Object
-path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network"
+path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1"
 verFile = "Mumford1_100_100_0.9_0.005_50_itr6_itrcap6_Solution_3.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\results\\2_hp_set_20\\hp_20_spsa_close.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\spsa_vanila_far_29012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network\\stopPoint_observed.csv")
+observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1\\stopPoint_observed.csv")
 
 changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
                       "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
 
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
 
-observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network\\lineRoute_observed.csv")
+observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1\\lineRoute_observed.csv")
 changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", "PTripsUnlinked1(AP)" : "PTripsUnlinked1(AP)_Obs"}
 observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
 observedRouteListDf["LineName"] = observedRouteListDf["LineName"].astype(str)
@@ -43,14 +43,14 @@ max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 0.160877492522691
-a = 1.61112888009075
+c = 1.419123356
+a = 4.83338664027225
 A = 30.0
-C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
+C = 0    # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 # Order : In-vehicle time, Access time, Egress time, Transfer Walk time, Origin wait time, Transfer wait time
 ##Applicable to mumford1 InvehicleTime, Origin Wait Time, Transfer Wait time
-initial_guess = [2.0, 1.5, 2.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
+initial_guess = [5.0, 5.0, 5.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)

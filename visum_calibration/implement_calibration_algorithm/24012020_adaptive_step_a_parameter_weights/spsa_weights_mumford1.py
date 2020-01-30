@@ -22,7 +22,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\spsa_adaptive_step_far_29012020.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\spsa_aStep_weight_far_29012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -49,8 +49,11 @@ a = 4.83338664027225
 A = 30.0
 C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
-# Order : In-vehicle time, Origin wait time, Transfer wait time
+# Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
 initial_guess = [5.0, 5.0, 5.0]  # solution = [1.0, 2.0, 3.0]
+parameter_weights = [0.131359564, 1.0, 0.450069101] #calculated based on standard deviation of each parameter from the sensitivity analysis (took the inverse and devided my the maximum stdv)
+
+
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 print initial_guess, initial_cost
 
@@ -81,13 +84,13 @@ for k in range(max_iterations):
     
     for i in range(len(increase_u)):
         if current_estimate[i] + ck * deltaK[i] > 0 and current_estimate[i] + ck * deltaK[i] <= 9.9:
-            increase_u[i] = current_estimate[i] + ck * deltaK[i]
+            increase_u[i] = current_estimate[i] + ck * deltaK[i] * parameter_weights[i]
         else:
             increase_u[i] = current_estimate[i]
     
     for j in range(len(decrease_u)):
         if current_estimate[j] - ck * deltaK[j] > 0 and current_estimate[j] - ck * deltaK[j] <= 9.9:
-            decrease_u[j] = current_estimate[j] - ck * deltaK[j]
+            decrease_u[j] = current_estimate[j] - ck * deltaK[j] * parameter_weights[i]
         else:
             decrease_u[j] = current_estimate[j]
     
@@ -101,20 +104,29 @@ for k in range(max_iterations):
     
     # Step 5 - Update current_estimate estimate
     previous_estimate = np.copy(current_estimate)
-    
-    #--------------fix 05122019---------------------------------
+
     gk_step_size = ak * gk
+    gk_step_size_weights = [gk * weight for gk, weight in zip(gk_step_size, parameter_weights)]
     
-    if (min(cost_increase, cost_decrease) - initial_cost*2) >= 0:
+    #===========================================================================
+    # for m in range(len(previous_estimate)):
+    #         if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
+    #             current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m]
+    #     
+    #         else:
+    #             current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
+    #===========================================================================
+    
+    if (min(cost_increase, cost_decrease) - initial_cost) >= 0:
         current_estimate = np.copy(best_estimate)
         a = a*0.5
         print "xxx"
     else:
-        
+          
         for m in range(len(previous_estimate)):
-            if previous_estimate[m] - gk_step_size[m] >= 0 and previous_estimate[m] - gk_step_size[m] <= 9.9:
-                current_estimate[m] = previous_estimate[m] - gk_step_size[m]
-    
+            if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
+                current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m]
+      
             else:
                 current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
             

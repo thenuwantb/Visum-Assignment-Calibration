@@ -108,7 +108,6 @@ for k in range(max_iterations):
     if (min(cost_increase, cost_decrease) - initial_cost*2) >= 0:
         current_estimate = np.copy(best_estimate)
         a = a*0.5
-        c = c*0.5
         print "xxx"
     else:
         

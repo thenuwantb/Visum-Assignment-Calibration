@@ -22,7 +22,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-results_save = "results\\1_net_2_hp_13_ob_1\\spsa_aStep_weight_close_28012020.csv"
+results_save = "results\\1_net_2_hp_13_ob_1\\spsa_aStep_weight_far_28012020.csv"
 result_df_save_as = os.path.join(path, results_save)
 
 
@@ -52,7 +52,7 @@ A = 30.0
 C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [2.0, 2.8, 3.0, 1.0, 1.5, 2.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
+initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 parameter_weights = [0.263847468, 1.0, 0.527366201, 0.929654002, 0.521260619, 0.510245914]  #calculated based on standard deviation of each parameter from the sensitivity analysis
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 print initial_guess, initial_cost
@@ -113,7 +113,7 @@ for k in range(max_iterations):
     # for m in range(len(previous_estimate)):
     #         if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
     #             current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m]
-    #  
+    #   
     #         else:
     #             current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
     #===========================================================================
@@ -123,11 +123,11 @@ for k in range(max_iterations):
         a = a*0.5
         print "xxx"
     else:
-          
+           
         for m in range(len(previous_estimate)):
             if previous_estimate[m] - gk_step_size_weights[m] >= 0 and previous_estimate[m] - gk_step_size_weights[m] <= 9.9:
                 current_estimate[m] = previous_estimate[m] - gk_step_size_weights[m]
-      
+       
             else:
                 current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
             
