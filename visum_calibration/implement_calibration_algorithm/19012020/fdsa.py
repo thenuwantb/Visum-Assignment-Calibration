@@ -46,14 +46,14 @@ max_iterations = 300
 alpha = 0.602
 gamma = 0.101
 c = 0.6
-a = 3.3
+a = 3.5
 A = 30.0
 C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
-initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
+initial_guess = [1.07991565, 2.88600954, 3.51900674, 1.87816376, 2.88600954, 3.51900674]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
+initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, estimateList=initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 
 print initial_guess, initial_cost
 plot_dict = OrderedDict()

@@ -25,7 +25,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-results_save = "results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_weight_far.csv"
+results_save = "results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_weight_results_from_close.csv"
 result_df_save_as = os.path.join(path, results_save)
 
 # load Visum file
@@ -48,14 +48,14 @@ max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 1.419123356
-a = 4.83338664027225
+c = 0.6
+a = 1.0
 A = 30.0
 C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
-parameter_weights = [0.263847468, 1.0, 0.527366201, 0.929654002, 0.521260619, 0.510245914] #calculated based on standard deviation of each parameter from the sensitivity analysis
+initial_guess = [1.07991565, 2.88600954, 3.51900674, 1.87816376, 1.60705385, 3.13857607]  # close [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0] #farmost [9.0,9.0,9.0,9.0,9.0.9.0]
+parameter_weights = [1, 1.0, 1, 1, 1, 1] #calculated based on standard deviation of each parameter from the sensitivity analysis
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
 
 #Tracking the test value for the objective function

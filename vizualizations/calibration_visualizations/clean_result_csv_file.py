@@ -27,7 +27,6 @@ for i in range(len(resultsdf_estimate_list)):
     estimate = estimate.strip("[")
     estimate = estimate.strip("]")
     
-    
     estimate_list = estimate.split()
     estimate_list = [float(k) for k in estimate_list]
     
@@ -35,8 +34,8 @@ for i in range(len(resultsdf_estimate_list)):
     accessTime_est.append(estimate_list[1])
     egressTime_est.append(estimate_list[2])
     walkingTime_est.append(estimate_list[3])
-    originWaitTime_est.append(estimate_list[1])
-    transferWaitTime_est.append(estimate_list[2])
+    originWaitTime_est.append(estimate_list[4])
+    transferWaitTime_est.append(estimate_list[5])
 
 #print len(invehicleTime_est)
 resultsdf['invehicleTime_est'] = invehicleTime_est

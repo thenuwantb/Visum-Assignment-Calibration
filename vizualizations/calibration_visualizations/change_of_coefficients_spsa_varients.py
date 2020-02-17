@@ -11,7 +11,7 @@ import itertools
 #This is to compare FDSA and SPSA with far estimates and close estimates - altogether 4 line plots in one plot
 #load csvs as dataframes
  
-spsa_vanila = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\far_cleaned\\spsa_vanila_far_29012020_cleaned.csv")
+spsa_vanila = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\cleaned_data\\spsa_vanila_close_28012020_cleaned.csv")
 spsa_adaptiveStep = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\far_cleaned\\spsa_adaptive_step_far_29012020_cleaned.csv")
 spsa_weight = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\far_cleaned\\spsa_weight_far_29012020_cleaned.csv")
 spsa_aStepWeight = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\2_mumford_1_hp_13_ob_2\\far_cleaned\\spsa_aStep_weight_far_29012020_cleaned.csv")
@@ -59,7 +59,7 @@ _prior = list(itertools.repeat(2.0,301))
 _ = plt.plot(iteration_list, sv_originWaitTime_est, color = 'dimgrey',  linewidth = 1.0 , label = 'Vanila SPSA') #color = 'red'
 _ = plt.plot(iteration_list, sw_originWaitTime_est, color = 'orangered', linewidth = 1.2 , label = 'Weight') #color = 'darkorange'
 _ = plt.plot(iteration_list, sa_originWaitTime_est, color = 'dodgerblue', linewidth = 1.2, label = 'Adaptive Step') #color = 'royalblue'
-_ = plt.plot(iteration_list, saw_originWaitTime_est, color = 'mediumseagreen', linewidth = 1.2 , label = 'Adaptive Step & Weight') #color = 'seagreen'
+#_ = plt.plot(iteration_list, saw_originWaitTime_est, color = 'mediumseagreen', linewidth = 1.2 , label = 'Adaptive Step & Weight') #color = 'seagreen'
 
 _ = plt.plot(iteration_list, _prior, linestyle = '-.', linewidth = 0.75, color = 'dimgray', label = 'Observed Value')
  

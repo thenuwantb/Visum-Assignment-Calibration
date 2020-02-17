@@ -51,27 +51,27 @@ fw_originWaitTime_est = fdsa_weight.originWaitTime_est.tolist()
 fw_transferWaitTime_est = fdsa_weight.transferWaitTime_est.tolist()
  
 #multi line plot to see the change of in vehicle time estimate over the iterations
-_prior = list(itertools.repeat(2.0,301))
+_prior = list(itertools.repeat(3.0,301))
     
 
-_ = plt.plot(iteration_list, sv_originWaitTime_est, color = 'red',  linewidth = 1.0 , label = 'SPSA - As is') #color = 'red'
-_ = plt.plot(iteration_list, sw_originWaitTime_est, color = 'red', linewidth = 1.2, linestyle = ":", label = "SPSA - Weight") #color = 'darkorange'
-_ = plt.plot(iteration_list, fv_originWaitTime_est, color = 'dodgerblue', linewidth = 1.0, label = "FDSA - As is") #color = 'royalblue'
-_ = plt.plot(iteration_list, fw_originWaitTime_est, color = 'dodgerblue', linewidth = 1.2 , linestyle = ":",label = "FDSA - Weight") #color = 'seagreen'
+_ = plt.plot(iteration_list, sv_transferWaitTime_est, color = 'red',  linewidth = 1.0 , label = 'SPSA - As is') #color = 'red'
+_ = plt.plot(iteration_list, sw_transferWaitTime_est, color = 'red', linewidth = 1.2, linestyle = ":", label = "SPSA - Weight") #color = 'darkorange'
+_ = plt.plot(iteration_list, fv_transferWaitTime_est, color = 'dodgerblue', linewidth = 1.0, label = "FDSA - As is") #color = 'royalblue'
+_ = plt.plot(iteration_list, fw_transferWaitTime_est, color = 'dodgerblue', linewidth = 1.2 , linestyle = ":",label = "FDSA - Weight") #color = 'seagreen'
 
 _ = plt.plot(iteration_list, _prior, linestyle = '-.', linewidth = 0.75, color = 'dimgray', label = 'Observed Value')
  
  
 _ = plt.xlabel("Iteration")
 _ = plt.ylabel('Estimated value of the coefficient')
-_ = plt.suptitle("Parameter: Origin Wait Time")
+_ = plt.suptitle("Parameter: Transfer Wait Time")
 #_ = plt.title("alpha = 0.602, gamma = 0.101, c = 1.419, a = 4.833, A = 30.0", fontsize = 10)
  
 #_ = plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',ncol=2, mode="expand", borderaxespad=0.)
 _ = plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
      
 #plt.show()
-savepath = 'C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa_spsa_comparison\\origin_wait_time.svg'
+savepath = 'C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa_spsa_comparison\\transferWaitTime.svg'
 plt.draw()
 plt.savefig(savepath, bbox_inches = 'tight')   
 

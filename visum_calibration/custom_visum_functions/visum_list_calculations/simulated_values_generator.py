@@ -11,9 +11,9 @@ import pandas as pd
 
 def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineRoutes):
     
-    
     #Run Assignment and create dataframes for simulated values
     setImpedenceValuesAndRunAssignment(Visum, estimateList)
+    
     simStopPoints = simulateStopPointValues(Visum)
     simLineRoutes = simulateLineRouteVolumes(Visum)
     #simTransferWalk = simulateTransferWalkTimeValues(Visum)
@@ -21,8 +21,7 @@ def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineR
     
     #merge the simulated values and observed values
     stopPoints_merged = obsStopPoints.merge(simStopPoints, on = ["No", "StopAreaNo", "NodeNo"])
-    #transferWalk_merged = obsTransferWalk.merge(simTransferWalk, on = ["StopNo", "FromStopAreaNo", "ToStopAreaNo"])
-    #connectorVolumes_merged = obsConnectorVolumes.merge(simConnectorVolumes, on = ["ZoneNo", "NodeNo", "Direction"])
+
     
     lineRoute_merged = obsLineRoutes.merge(simLineRoutes, on = ["LineName", "Name"]) #check how to add direction to the merge
     
@@ -67,6 +66,7 @@ def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineR
     #pTripsUnlinked1_rmpse = ec.calculateRMPSE(pTripsUnlinked1_obs, pTripsUnlinked1_sim)
     
     total_rmsn = pTripsUnlinked0_abs + pTripsUnlinked1_abs + passTransAlightWalk_rmsn + passTransWalkBoard_rmsn #ob_1
+    
     #total_rmsn = pTripsUnlinked0_abs + pTripsUnlinked1_abs + passTransTotal_rmsn #ob_2
     return total_rmsn
     

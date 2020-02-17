@@ -23,7 +23,7 @@ versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
 # save results 
-result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_vanila_far.csv"
+result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_vanila_close_31012020.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
@@ -45,8 +45,8 @@ max_iterations = 300
 
 alpha = 0.602
 gamma = 0.101
-c = 1.419123356
-a = 4.83338664027225
+c = 1.41912335620038
+a = 3.62503998020419
 A = 30.0
 C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 

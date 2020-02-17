@@ -23,21 +23,21 @@ fdsa_weight_loss = fdsa_weight.RMSN.tolist()
 fig, ax = plt.subplots()
 iterations_list = spsa_vanila.Iteration.tolist()
 
-_ = plt.plot(iterations_list, spsa_vanila_loss, linewidth = 1, color = 'red', label = "SPSA - As is")
-#_ = plt.plot(iterations_list, spsa_adaptiveStep_loss, linewidth = 1.2, color = 'dodgerblue', label = "SPSA - Adaptive Step")
-_ = plt.plot(iterations_list, spsa_weight_loss, linewidth = 1.2, color = 'red', linestyle = ':', label = "SPSA - Weight")
-_ = plt.plot(iterations_list, fdsa_vanila_loss, linewidth = 1, color = 'dodgerblue', label = "FDSA - As is")
-_ = plt.plot(iterations_list, fdsa_weight_loss, linewidth = 1.2, color = 'dodgerblue', linestyle = ':', label = "FDSA - Weight")
+_ = plt.plot(iterations_list, spsa_vanila_loss, linewidth = 1, color = 'gray', label = "SPSA - As is")
+_ = plt.plot(iterations_list, spsa_adaptiveStep_loss, linewidth = 1.2, color = 'dodgerblue', label = "SPSA - Adaptive Step")
+_ = plt.plot(iterations_list, spsa_weight_loss, linewidth = 1.2, color = 'coral', label = "SPSA - Weight")
+#_ = plt.plot(iterations_list, fdsa_vanila_loss, linewidth = 1, color = 'dodgerblue', label = "FDSA - As is")
+#_ = plt.plot(iterations_list, fdsa_weight_loss, linewidth = 1.2, color = 'dodgerblue', linestyle = ':', label = "FDSA - Weight")
 
 ax.set_yticks(np.arange(0, 8.0, 0.5))
 plt.xlabel("Number of Iterations")
 plt.ylabel("Loss")
 plt.title("alpha = 0.602, gamma = 0.101, c = 1.419, a = 4.833, A = 30.0", fontsize = 11)
-plt.suptitle("GoF -  FDSA and SPSA  - better initial estimates")
+plt.suptitle("GoF - SPSA Varients - Better Estimates")
 
 plt.legend()
 
-savepath = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa_spsa_comparison\\loss_comparison.svg"
+savepath = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa_spsa_comparison\\loss_comparison_spsa.svg"
 plt.draw()
 #plt.show()
 plt.savefig(savepath, bbox_inches = 'tight')   
