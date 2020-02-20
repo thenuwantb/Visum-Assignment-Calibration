@@ -40,12 +40,25 @@ filter2_df = filter1_df.copy().groupby(['ORIGZONENO', 'DESTZONENO']).filter(lamb
 filter3_df = filter2_df.copy().groupby(['ORIGZONENO', 'DESTZONENO']).filter(lambda group : group['ROUTE_OD'].min() >= 10)
 print filter3_df.head()
 
-#save results
-save_path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\3_Analysis\\Direct Assignment\\Major_origns\\3004925_Raffles_place_cleaned.csv"
-filter3_df.to_csv(save_path)
+# minimum route share per OD pair
+min_route_share = pd.DataFrame(columns=['Origin', 'Destination', 'Min_Share(%)'])
+for od_pair, group in filter3_df.groupby(['ORIGZONENO', 'DESTZONENO']):
+    origin, destination = od_pair
+    group_min = group['SHARE(%)'].min()
+    
+    min_route_share = min_route_share.append({'Origin': origin, 'Destination': destination, 'Min_Share(%)' :group_min}, ignore_index = True)
+    
+print min_route_share.head()
+    
 
-filter3_df['SHARE(%)'].hist(bins = 100)
-plt.show()
+#===============================================================================
+# #save results
+# save_path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\3_Analysis\\Direct Assignment\\Major_origns\\3004925_Raffles_place_cleaned.csv"
+# filter3_df.to_csv(save_path)
+# 
+# filter3_df['SHARE(%)'].hist(bins = 100)
+# plt.show()
+#===============================================================================
 
 
 
