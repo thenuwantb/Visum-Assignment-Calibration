@@ -10,4 +10,3 @@ import win32com.client as com
 
 def loadVisum(VisumComDispatch, verPath):
     VisumComDispatch.LoadVersion(verPath)
-    

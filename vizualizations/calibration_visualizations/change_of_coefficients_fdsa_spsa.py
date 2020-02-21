@@ -5,20 +5,25 @@ Created on 28 Jan 2020
 '''
 import pandas as pd
 import matplotlib.pyplot as plt
+
 plt.style.use('default')
 import itertools
 
-#This is to compare FDSA and SPSA with far estimates and close estimates - altogether 4 line plots in one plot
-#load csvs as dataframes
- 
-spsa_vanila = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\cleaned_data\\spsa_vanila_close_28012020_cleaned.csv")
-fdsa_vanila = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_vanila_close_cleaned.csv")
-spsa_weight = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\cleaned_data\\spsa_weight_close_28012020_cleaned.csv")
-fdsa_weight = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_weight_close_cleaned.csv")
+# This is to compare FDSA and SPSA with far estimates and close estimates - altogether 4 line plots in one plot
+# load csvs as dataframes
+
+spsa_vanila = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\cleaned_data\\spsa_vanila_close_28012020_cleaned.csv")
+fdsa_vanila = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_vanila_close_cleaned.csv")
+spsa_weight = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\cleaned_data\\spsa_weight_close_28012020_cleaned.csv")
+fdsa_weight = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa\\fdsa_weight_close_cleaned.csv")
 
 iteration_list = fdsa_vanila.Iteration.tolist()
- 
-#spsa results to seperate lists
+
+# spsa results to seperate lists
 
 sv_inVehicleTime_est = spsa_vanila.invehicleTime_est.tolist()
 sv_accessTime_est = spsa_vanila.accessTime_est.tolist()
@@ -27,14 +32,12 @@ sv_transferWalkingTime_est = spsa_vanila.walkingTime_est.tolist()
 sv_originWaitTime_est = spsa_vanila.originWaitTime_est.tolist()
 sv_transferWaitTime_est = spsa_vanila.transferWaitTime_est.tolist()
 
-
 sw_inVehicleTime_est = spsa_weight.invehicleTime_est.tolist()
 sw_accessTime_est = spsa_weight.accessTime_est.tolist()
 sw_egressTime_est = spsa_weight.egressTime_est.tolist()
 sw_transferWalkingTime_est = spsa_weight.walkingTime_est.tolist()
 sw_originWaitTime_est = spsa_weight.originWaitTime_est.tolist()
 sw_transferWaitTime_est = spsa_weight.transferWaitTime_est.tolist()
- 
 
 fv_inVehicleTime_est = fdsa_vanila.invehicleTime_est.tolist()
 fv_accessTime_est = fdsa_vanila.accessTime_est.tolist()
@@ -49,36 +52,35 @@ fw_egressTime_est = fdsa_weight.egressTime_est.tolist()
 fw_transferWalkingTime_est = fdsa_weight.walkingTime_est.tolist()
 fw_originWaitTime_est = fdsa_weight.originWaitTime_est.tolist()
 fw_transferWaitTime_est = fdsa_weight.transferWaitTime_est.tolist()
- 
-#multi line plot to see the change of in vehicle time estimate over the iterations
-_prior = list(itertools.repeat(3.0,301))
-    
 
-_ = plt.plot(iteration_list, sv_transferWaitTime_est, color = 'red',  linewidth = 1.0 , label = 'SPSA - As is') #color = 'red'
-_ = plt.plot(iteration_list, sw_transferWaitTime_est, color = 'red', linewidth = 1.2, linestyle = ":", label = "SPSA - Weight") #color = 'darkorange'
-_ = plt.plot(iteration_list, fv_transferWaitTime_est, color = 'dodgerblue', linewidth = 1.0, label = "FDSA - As is") #color = 'royalblue'
-_ = plt.plot(iteration_list, fw_transferWaitTime_est, color = 'dodgerblue', linewidth = 1.2 , linestyle = ":",label = "FDSA - Weight") #color = 'seagreen'
+# multi line plot to see the change of in vehicle time estimate over the iterations
+_prior = list(itertools.repeat(3.0, 301))
 
-_ = plt.plot(iteration_list, _prior, linestyle = '-.', linewidth = 0.75, color = 'dimgray', label = 'Observed Value')
- 
- 
+_ = plt.plot(iteration_list, sv_transferWaitTime_est, color='red', linewidth=1.0, label='SPSA - As is')  # color = 'red'
+_ = plt.plot(iteration_list, sw_transferWaitTime_est, color='red', linewidth=1.2, linestyle=":",
+             label="SPSA - Weight")  # color = 'darkorange'
+_ = plt.plot(iteration_list, fv_transferWaitTime_est, color='dodgerblue', linewidth=1.0,
+             label="FDSA - As is")  # color = 'royalblue'
+_ = plt.plot(iteration_list, fw_transferWaitTime_est, color='dodgerblue', linewidth=1.2, linestyle=":",
+             label="FDSA - Weight")  # color = 'seagreen'
+
+_ = plt.plot(iteration_list, _prior, linestyle='-.', linewidth=0.75, color='dimgray', label='Observed Value')
+
 _ = plt.xlabel("Iteration")
 _ = plt.ylabel('Estimated value of the coefficient')
 _ = plt.suptitle("Parameter: Transfer Wait Time")
-#_ = plt.title("alpha = 0.602, gamma = 0.101, c = 1.419, a = 4.833, A = 30.0", fontsize = 10)
- 
-#_ = plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',ncol=2, mode="expand", borderaxespad=0.)
+# _ = plt.title("alpha = 0.602, gamma = 0.101, c = 1.419, a = 4.833, A = 30.0", fontsize = 10)
+
+# _ = plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',ncol=2, mode="expand", borderaxespad=0.)
 _ = plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
-     
-#plt.show()
+
+# plt.show()
 savepath = 'C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\results\\1_net_2_hp_13_ob_1\\fdsa_spsa_comparison\\transferWaitTime.svg'
 plt.draw()
-plt.savefig(savepath, bbox_inches = 'tight')   
+plt.savefig(savepath, bbox_inches='tight')
 
-
-
-#===============================================================================
-#This is to compare FDSA and SPSA
+# ===============================================================================
+# This is to compare FDSA and SPSA
 # #load csvs as dataframes
 # 
 # spsa_df = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\results\\hyper_parameter_set_14\\hp_set14_SPSA_10012020_cleaned.csv")
@@ -121,9 +123,9 @@ plt.savefig(savepath, bbox_inches = 'tight')
 # _ = plt.legend()
 #     
 # plt.show()
-#===============================================================================
+# ===============================================================================
 
-#===============================================================================
+# ===============================================================================
 # #multi line plot to see the change of walking time estimate over the iterations
 # _prior = list(itertools.repeat(2.0,301))
 #   
@@ -140,9 +142,9 @@ plt.savefig(savepath, bbox_inches = 'tight')
 # plt.savefig('Walk_Time_change_600dpi', dpi = 600)
 #    
 # plt.show()
-#===============================================================================
+# ===============================================================================
 
-#===============================================================================
+# ===============================================================================
 # #multi line plot to see the change of Origin wait time estimate over the iterations
 # _prior = list(itertools.repeat(3.0,301))
 #   
@@ -159,9 +161,9 @@ plt.savefig(savepath, bbox_inches = 'tight')
 # plt.savefig('Origin_Wait_Time_change_600dpi', dpi = 600)
 #    
 # plt.show()
-#===============================================================================
+# ===============================================================================
 
-#===============================================================================
+# ===============================================================================
 # #multi line plot to see the change of transfer wait time estimate over the iterations
 # _prior = list(itertools.repeat(5.0,301))
 #   
@@ -178,4 +180,4 @@ plt.savefig(savepath, bbox_inches = 'tight')
 # plt.savefig('Trasfer_Wait_Time_change_600dpi', dpi = 600)
 #    
 # plt.show()
-#===============================================================================
+# ===============================================================================

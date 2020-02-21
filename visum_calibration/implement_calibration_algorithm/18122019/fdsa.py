@@ -14,20 +14,20 @@ import pandas as pd
 import win32com.client as com
 import timeit
 
-
 # Load Visum Version and create a Network Object
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\network"
 verFile = "simple_network_11_stops.ver"
 versionPath = os.path.join(path, verFile)
 Visum = com.Dispatch("Visum.Visum.180")
 
-#save results 
+# save results 
 result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\results\\hyper_parameter_set_10\\fdsa_far_solutions_hp_set_10_run_2.csv"
 
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-stopPointListDf_Observed = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\network\\stopPoint_obs.csv")
+stopPointListDf_Observed = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\18122019\\network\\stopPoint_obs.csv")
 stopPointListDf_Observed['Key'] = stopPointListDf_Observed['Key'].astype(str)
 stopPointListDf_Observed['Observed_Values'] = stopPointListDf_Observed['Observed_Values'].astype(float)
 
@@ -39,73 +39,73 @@ c = 1.4
 a = 0.9
 A = 30.0
 
-#initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)] #poor estimates
-#initial_guess = [float(1.8), float(2.8), float(3.8), float(5.8)] #better estimates
-initial_guess = [0.3472315, 0.001, 0.175536, 1.0454] #results from run 1 plugged in as initial estimates and run the simulation again
+# initial_guess = [float(0.001), float(0.001), float(0.001), float(0.001)] #poor estimates
+# initial_guess = [float(1.8), float(2.8), float(3.8), float(5.8)] #better estimates
+initial_guess = [0.3472315, 0.001, 0.175536,
+                 1.0454]  # results from run 1 plugged in as initial estimates and run the simulation again
 initial_cost = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, initial_guess)
 
 plot_dict = OrderedDict()
-plot_dict = {0:[initial_cost, initial_guess]}
+plot_dict = {0: [initial_cost, initial_guess]}
 
 u = np.copy(initial_guess)
 
-#measure time - start
+# measure time - start
 t_start = timeit.default_timer()
 
 for k in range(max_iterations):
-    
-    ak = a / (A + k + 1)**alpha
-    ck = c / (k + 1)**gamma
-    
+
+    ak = a / (A + k + 1) ** alpha
+    ck = c / (k + 1) ** gamma
+
     gk = np.zeros(shape(u)[0])
-    
+
     for i in range(shape(gk)[0]):
-        
+
         # Step 2: Generate perturbations one parameter at a time. 
-        
+
         increase_u = np.copy(u)
-        
-        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9 :
+
+        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9:
             increase_u[i] += ck
-        
+
         decrease_u = np.copy(u)
-        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9 :
+        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9:
             decrease_u[i] -= ck
-        
+
         # Step 3: Function evaluation
         cost_increase = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, increase_u)
-    
+
         cost_decrease = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, decrease_u)
-        
+
         # Step 4: Gradient Approximation
         gk[i] = (cost_increase - cost_decrease) / (2.0 * ck)
-        
+
     old_u = np.copy(u)
     gk_step_size = ak * gk
-    
+
     # Step 5 : Update u estimate
-    
+
     for m in range(len(old_u)):
         if old_u[m] - gk_step_size[m] >= 0 and old_u[m] - gk_step_size[m] <= 9.9:
             u[m] = old_u[m] - gk_step_size[m]
-            
+
         else:
             u[m] = old_u[m]
-    
+
     cost_new = vlc.calcErrorStopPointSimulatedAndObserved(Visum, stopPointListDf_Observed, u)
-    
+
     print k
     print cost_new
     print u
     estimate_to_dict = np.copy(u)
     plot_dict[k + 1] = [cost_new, estimate_to_dict]
-    
+
 t_duration = timeit.default_timer() - t_start
 print "Duration = " + str(t_duration)
 
 # saving values to a Data Frame
 results_df = pd.DataFrame()
-
 
 # Creation of the plot
 iteration_id = []
@@ -122,7 +122,7 @@ results_df['RMSN'] = cost_value
 results_df['Estimate'] = estimate_list
 
 results_df.to_csv(result_df_save_as)
-    
+
 # print y_val
 plt.plot(iteration_id, cost_value)
 plt.xlabel("Number of Iterations")

@@ -11,7 +11,6 @@ from custom_visum_functions.open_close_visum import open_close as ocv
 import pandas as pd
 from custom_visum_functions.visum_list_calculations import list_calculations as lc
 
-
 path = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\21012020_Mumford1\\network"
 verFile = "Mumford1_100_100_0.9_0.005_50_itr6_itrcap6_Solution_3.ver"
 versionPath = os.path.join(path, verFile)

@@ -19,15 +19,16 @@ Visum = com.Dispatch("Visum.Visum.170")
 ocv.loadVisum(VisumComDispatch=Visum, verPath=version_path)
 
 # 2. Read in the list of origins and convert it to a list
-origin_file = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\all_origins.csv"
+# origin_file = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\all_origins.csv"
+origin_file_major = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\origins_greater_than_100000.csv"
 
-all_origins = pd.read_csv(origin_file)
+all_origins = pd.read_csv(origin_file_major)
 all_origins_list = all_origins['NO'].to_list()
 
 min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'MinSharePEC'])
 
 # range(len(all_origins_list))
-for origin_zone in range(5):
+for origin_zone in range(len(all_origins_list)):
     print origin_zone
     # Create PuTPaths object with 'OrigZoneNo', 'DestZoneNo', 'Index', 'ODTrips', 'NumTransfers', 'InVehDist'
     put_paths = Visum.Lists.CreatePuTPathList

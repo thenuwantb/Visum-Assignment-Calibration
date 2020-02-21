@@ -27,15 +27,21 @@ result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1\\stopPoint_observed.csv")
+observedStopPointDf = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1\\stopPoint_observed.csv")
 
-changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
-                      "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
+changeColNamesStopPointDic = {"PassTransTotal(AP)": "PassTransTotal(AP)_Obs",
+                              "PassTransDir(AP)": "PassTransDir(AP)_Obs",
+                              "PassTransWalkBoard(AP)": "PassTransWalkBoard(AP)_Obs",
+                              "PassTransAlightWalk(AP)": "PassTransAlightWalk(AP)_Obs",
+                              "TransferWaitTime(AP)": "TransferWaitTime(AP)_Obs"}
 
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
 
-observedRouteListDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1\\lineRoute_observed.csv")
-changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)":"PTripsUnlinked0(AP)_Obs", "PTripsUnlinked1(AP)" : "PTripsUnlinked1(AP)_Obs"}
+observedRouteListDf = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\28012020_evaluate_spsa_varients\\network\\Mumford1\\lineRoute_observed.csv")
+changeColNamedDic_RouteList = {"PTripsUnlinked0(AP)": "PTripsUnlinked0(AP)_Obs",
+                               "PTripsUnlinked1(AP)": "PTripsUnlinked1(AP)_Obs"}
 observedRouteListDf = observedRouteListDf.rename(columns=changeColNamedDic_RouteList)
 observedRouteListDf["LineName"] = observedRouteListDf["LineName"].astype(str)
 observedRouteListDf["Name"] = observedRouteListDf["Name"].astype(str)
@@ -47,15 +53,16 @@ gamma = 0.101
 c = 1.419123356
 a = 4.83338664027225
 A = 30.0
-C = 0   # added as an experiment - to control the behaviour of ck - (0 = no impact)
+C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
 # Order : In-vehicle time, Origin wait time, Transfer wait time
 initial_guess = [5.0, 5.0, 5.0]  # solution = [1.0, 2.0, 3.0]
-initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
+initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, obsStopPoints=observedStopPointDf,
+                                                  obsLineRoutes=observedRouteListDf)
 print initial_guess, initial_cost
 
 plot_dict = OrderedDict()
-plot_dict = {0:[initial_cost, initial_guess]}
+plot_dict = {0: [initial_cost, initial_guess]}
 
 current_estimate = np.copy(initial_guess)
 best_estimate = np.copy(initial_guess)
@@ -67,72 +74,74 @@ np.random.seed(55)
 t_start = timeit.default_timer()
 
 for k in range(max_iterations):
-    
+
     ak = a / (A + k + 1) ** alpha
     ck = c / (C + k + 1) ** gamma
-    
+
     # Step 2 - Generation of simultaneous perturbation vector
 
     deltaK = np.random.choice([-1, 1], size=len(current_estimate), p=[0.5, 0.5])  # delta_k = np.array([1,-1])
-    
+
     # looping over each element and check whether it is in range (0,9) after the change
     increase_u = np.copy(current_estimate)
     decrease_u = np.copy(current_estimate)
-    
+
     for i in range(len(increase_u)):
         if current_estimate[i] + ck * deltaK[i] > 0 and current_estimate[i] + ck * deltaK[i] <= 9.9:
             increase_u[i] = current_estimate[i] + ck * deltaK[i]
         else:
             increase_u[i] = current_estimate[i]
-    
+
     for j in range(len(decrease_u)):
         if current_estimate[j] - ck * deltaK[j] > 0 and current_estimate[j] - ck * deltaK[j] <= 9.9:
             decrease_u[j] = current_estimate[j] - ck * deltaK[j]
         else:
             decrease_u[j] = current_estimate[j]
-    
+
     # Step 3 - Function evaluation
-    cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    
+    cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, obsStopPoints=observedStopPointDf,
+                                                       obsLineRoutes=observedRouteListDf)
+    cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, obsStopPoints=observedStopPointDf,
+                                                       obsLineRoutes=observedRouteListDf)
+
     # Step 4 - Gradient approximation
     gk = np.dot((cost_increase - cost_decrease) / (2.0 * ck), deltaK)
-    #print gk
-    
+    # print gk
+
     # Step 5 - Update current_estimate estimate
     previous_estimate = np.copy(current_estimate)
-    
-    #--------------fix 05122019---------------------------------
+
+    # --------------fix 05122019---------------------------------
     gk_step_size = ak * gk
-    
-    if (min(cost_increase, cost_decrease) - initial_cost*2) >= 0:
+
+    if (min(cost_increase, cost_decrease) - initial_cost * 2) >= 0:
         current_estimate = np.copy(best_estimate)
-        a = a*0.5
+        a = a * 0.5
         print "xxx"
     else:
-        
+
         for m in range(len(previous_estimate)):
             if previous_estimate[m] - gk_step_size[m] >= 0 and previous_estimate[m] - gk_step_size[m] <= 9.9:
                 current_estimate[m] = previous_estimate[m] - gk_step_size[m]
-    
+
             else:
-                current_estimate[m] = best_estimate[m] #earlier : current_estimate[m] = previous_estimate[m]
-            
-            
-    cost_new = sg.runAssignmentCalculateErrorRMSN(Visum, current_estimate, obsStopPoints=observedStopPointDf, obsLineRoutes = observedRouteListDf)
-    #--------------fix 05122019---------------------------------
-    
+                current_estimate[m] = best_estimate[m]  # earlier : current_estimate[m] = previous_estimate[m]
+
+    cost_new = sg.runAssignmentCalculateErrorRMSN(Visum, current_estimate, obsStopPoints=observedStopPointDf,
+                                                  obsLineRoutes=observedRouteListDf)
+    # --------------fix 05122019---------------------------------
+
     if cost_new < best_rmsn:
         best_rmsn = cost_new
-        best_estimate = np.copy(current_estimate) 
-    
+        best_estimate = np.copy(current_estimate)
+
     print k
     print cost_new
     print current_estimate
     print best_estimate
-    
+
     estimate_to_dict = np.copy(current_estimate)
-    
+
     plot_dict[k + 1] = [cost_new, estimate_to_dict]
 
 t_duration = timeit.default_timer() - t_start
@@ -149,7 +158,7 @@ for key, value in plot_dict.items():
     iteration_id.append(key)
     cost_value.append(value[0])
     estimate_list.append(value[1])
-    
+
 results_df['Iteration'] = iteration_id
 results_df['RMSN'] = cost_value
 results_df['estimate'] = estimate_list

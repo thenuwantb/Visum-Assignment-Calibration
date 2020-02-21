@@ -28,15 +28,20 @@ result_df_save_as = "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\
 # load Visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=versionPath)
 
-observedStopPointDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
+observedStopPointDf = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\stop_point_total_pax_transfer_observed_10012020.csv")
 
-changeColNamesStopPointDic = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs", "PassTransDir(AP)" : "PassTransDir(AP)_Obs", "PassTransWalkBoard(AP)" : "PassTransWalkBoard(AP)_Obs",
-                      "PassTransAlightWalk(AP)" : "PassTransAlightWalk(AP)_Obs", "TransferWaitTime(AP)" : "TransferWaitTime(AP)_Obs"}
+changeColNamesStopPointDic = {"PassTransTotal(AP)": "PassTransTotal(AP)_Obs",
+                              "PassTransDir(AP)": "PassTransDir(AP)_Obs",
+                              "PassTransWalkBoard(AP)": "PassTransWalkBoard(AP)_Obs",
+                              "PassTransAlightWalk(AP)": "PassTransAlightWalk(AP)_Obs",
+                              "TransferWaitTime(AP)": "TransferWaitTime(AP)_Obs"}
 
 observedStopPointDf = observedStopPointDf.rename(columns=changeColNamesStopPointDic)
 
-observedTransferWalkTimeDf = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\Transfers_and_Walk_Times_Within_Stop_13012019.csv")
-changeColNamesTransferWalkTime = {"PassTransTotal(AP)" : "PassTransTotal(AP)_Obs"}
+observedTransferWalkTimeDf = pd.read_csv(
+    "C:\\Users\\thenuwan.jayasinghe\\Documents\\_Thesis\\Coding\\Experiments\\07012020\\network\\Transfers_and_Walk_Times_Within_Stop_13012019.csv")
+changeColNamesTransferWalkTime = {"PassTransTotal(AP)": "PassTransTotal(AP)_Obs"}
 observedTransferWalkTimeDf = observedTransferWalkTimeDf.rename(columns=changeColNamesTransferWalkTime)
 
 max_iterations = 300
@@ -48,14 +53,14 @@ a = 3.7
 A = 30.0
 C = 0  # added as an experiment - to control the behaviour of ck - (0 = no impact)
 
-
 # Order : In-vehicle time, Access time, Egress time, Walk time, Origin wait time, Transfer wait time
-initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0, 5.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0]
+initial_guess = [5.0, 5.0, 5.0, 5.0, 5.0,
+                 5.0]  # [2.0, 2.8, 3.0, 1.0, 1.5, 2.0] # far [5.0, 5.0, 5.0, 5.0, 5.0, 5.0] #exact [1.0, 2.0, 2.0, 1.5, 2.0, 3.0]
 initial_cost = sg.runAssignmentCalculateErrorRMSN(Visum, initial_guess, observedStopPointDf, observedTransferWalkTimeDf)
 
 print initial_guess, initial_cost
 plot_dict = OrderedDict()
-plot_dict = {0:[initial_cost, initial_guess]}
+plot_dict = {0: [initial_cost, initial_guess]}
 
 u = np.copy(initial_guess)
 
@@ -63,56 +68,58 @@ u = np.copy(initial_guess)
 t_start = timeit.default_timer()
 
 for k in range(max_iterations):
-    
+
     ak = a / ((A + k + 1) ** alpha)
     ck = c / ((C + k + 1) ** gamma)
-    
+
     gk = np.zeros(shape(u)[0])
-    
+
     for i in range(shape(gk)[0]):
-        
+
         # Step 2: Generate perturbations one parameter at a time. 
-        
+
         increase_u = np.copy(u)
-        
-        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9 :
+
+        if increase_u[i] + ck >= 0 and increase_u[i] + ck <= 9.9:
             increase_u[i] += ck
-        
+
         decrease_u = np.copy(u)
-        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9 :
+        if decrease_u[i] - ck >= 0 and decrease_u[i] - ck <= 9.9:
             decrease_u[i] -= ck
-        
+
         # Step 3: Function evaluation
 
-        cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, observedStopPointDf, observedTransferWalkTimeDf)
-    
-        cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, observedStopPointDf, observedTransferWalkTimeDf)
-        
+        cost_increase = sg.runAssignmentCalculateErrorRMSN(Visum, increase_u, observedStopPointDf,
+                                                           observedTransferWalkTimeDf)
+
+        cost_decrease = sg.runAssignmentCalculateErrorRMSN(Visum, decrease_u, observedStopPointDf,
+                                                           observedTransferWalkTimeDf)
+
         # Step 4: Gradient Approximation
         gk[i] = (cost_increase - cost_decrease) / (2.0 * ck)
-        
+
     old_u = np.copy(u)
     gk_step_size = ak * gk
-    
+
     # Step 5 : Update u estimate
-    
+
     for m in range(len(old_u)):
         if old_u[m] - gk_step_size[m] >= 0 and old_u[m] - gk_step_size[m] <= 9.9:
             u[m] = old_u[m] - gk_step_size[m]
-            
+
         else:
             u[m] = old_u[m]
             print m
             print "xx"
-    
+
     cost_new = vlc.calcErrorWithSimulatedValues_StopPoints(Visum, observedStopPointDf, u)
-    
+
     print k
     print cost_new
     print u
     estimate_to_dict = np.copy(u)
     plot_dict[k + 1] = [cost_new, estimate_to_dict]
-    
+
 t_duration = timeit.default_timer() - t_start
 print "Duration = " + str(t_duration)
 
@@ -134,7 +141,7 @@ results_df['RMSN'] = cost_value
 results_df['estimate'] = estimate_list
 
 results_df.to_csv(result_df_save_as)
-    
+
 # print y_val
 plt.plot(iteration_id, cost_value)
 plt.xlabel("Number of Iterations")
