@@ -25,6 +25,7 @@ origin_file = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\all_origins.
 all_origins = pd.read_csv(origin_file)
 all_origins_list = all_origins['NO'].to_list()
 
+filter_3_all = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'Index', 'ODTrips', 'NumTransfers', 'InVehDist'])
 min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'MinSharePEC', 'TotalODTrips', 'MinRouteTrips'])
 
 # range(len(all_origins_list))
@@ -95,18 +96,22 @@ for origin_zone in range(len(all_origins_list)):
     filter3_df = filter2_df.copy().groupby(['OrigZoneNo', 'DestZoneNo']).filter(
         lambda _group: _group['RouteODTrips'].min() >= 10)
 
+    # 3.1. write all data from filter 3 to a new dataframe and save it after the for loop
+    filter_3_all.append(filter3_df, ignore_index=True)
+
     # 4. Write minimum route share per OD pair (min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo',
     # 'MinSharePEC'])
 
     for od_pair, group in filter3_df.groupby(['OrigZoneNo', 'DestZoneNo']):
         origin, destination = od_pair
-        group_min = group['RouteSharePEC'].min()
+        group_min_pec = group['RouteSharePEC'].min()
         total_od_trips = group['TotalODTrips'].mean()
         min_route_trips = group['RouteODTrips'].min()
 
         min_route_share = min_route_share.append(
-            {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinSharePEC': group_min, 'TotalODTrips': total_od_trips,
-             'MinRouteTrips': min_route_trips},
+            {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinSharePEC': group_min_pec,
+             'TotalODTrips': total_od_trips, 'MinRouteTrips': min_route_trips},
             ignore_index=True)
 
 min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_25022020.csv")
+filter_3_all.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_filter_3_all_25022020.csv")
