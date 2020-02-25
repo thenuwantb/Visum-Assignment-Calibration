@@ -28,7 +28,7 @@ all_origins_list = all_origins['NO'].to_list()
 min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'MinSharePEC', 'TotalODTrips'])
 
 # range(len(all_origins_list))
-for origin_zone in range(len(origin_file)):
+for origin_zone in range(len(all_origins_list)):
     print origin_zone
     # Create PuTPaths object with 'OrigZoneNo', 'DestZoneNo', 'Index', 'ODTrips', 'NumTransfers', 'InVehDist'
     put_paths = Visum.Lists.CreatePuTPathList
@@ -88,7 +88,7 @@ for origin_zone in range(len(origin_file)):
     # to be removed entirely from the data set
 
     filter2_df = filter1_df.copy().groupby(['OrigZoneNo', 'DestZoneNo']).filter(
-        lambda _group: _group['RouteSharePEC'].max() < 90)
+        lambda _group: _group['RouteSharePEC'].max() < 99)
 
     # 3. OD paths with the minimum route od trips = 10 (less than 1 trip per day) trip is also removed
 
@@ -107,4 +107,4 @@ for origin_zone in range(len(origin_file)):
             {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinSharePEC': group_min, 'TotalODTrips': total_od_trips},
             ignore_index=True)
 
-min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_24022020.csv")
+min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_24022020.csv")

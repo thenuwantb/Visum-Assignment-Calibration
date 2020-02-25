@@ -63,7 +63,8 @@ import matplotlib.pyplot as plt
 # ===============================================================================
 
 data = pd.read_csv(
-    "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\3_Analysis\\Direct Assignment\\Major_origns\\min_route_share_21022020.csv")
+    "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_24022020.csv")
 
-data['MinSharePEC'].hist(bins=50)
+#data['MinSharePEC'].hist(bins=100)
+data['MinSharePEC'].hist(cumulative=True, density = 1, bins = 100)
 plt.show()
