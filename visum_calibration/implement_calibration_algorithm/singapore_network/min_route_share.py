@@ -25,7 +25,7 @@ origin_file = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\all_origins.
 all_origins = pd.read_csv(origin_file)
 all_origins_list = all_origins['NO'].to_list()
 
-min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'MinSharePEC', 'TotalODTrips'])
+min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'MinSharePEC', 'TotalODTrips', 'MinRouteTrips'])
 
 # range(len(all_origins_list))
 for origin_zone in range(len(all_origins_list)):
@@ -102,9 +102,11 @@ for origin_zone in range(len(all_origins_list)):
         origin, destination = od_pair
         group_min = group['RouteSharePEC'].min()
         total_od_trips = group['TotalODTrips'].mean()
+        min_route_trips = group['RouteODTrips'].min()
 
         min_route_share = min_route_share.append(
-            {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinSharePEC': group_min, 'TotalODTrips': total_od_trips},
+            {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinSharePEC': group_min, 'TotalODTrips': total_od_trips,
+             'MinRouteTrips': min_route_trips},
             ignore_index=True)
 
-min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_24022020.csv")
+min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_25022020.csv")
