@@ -20,12 +20,14 @@ ocv.loadVisum(VisumComDispatch=Visum, verPath=version_path)
 
 # 2. Read in the list of origins and convert it to a list
 origin_file = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\all_origins.csv"
-#origin_file_major = "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\origins_greater_than_100000.csv"
 
 all_origins = pd.read_csv(origin_file)
 all_origins_list = all_origins['NO'].to_list()
 
-filter_3_all = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'Index', 'ODTrips', 'NumTransfers', 'InVehDist'])
+# sample_origins origin list will take less time to execute.  Good for testing
+sample_origins = [3032002, 3030693, 3029040, 3029331, 3004970]
+
+filter_3_all = pd.DataFrame()
 min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo', 'MinSharePEC', 'TotalODTrips', 'MinRouteTrips'])
 
 # range(len(all_origins_list))
@@ -97,7 +99,7 @@ for origin_zone in range(len(all_origins_list)):
         lambda _group: _group['RouteODTrips'].min() >= 10)
 
     # 3.1. write all data from filter 3 to a new dataframe and save it after the for loop
-    filter_3_all.append(filter3_df, ignore_index=True)
+    filter_3_all = filter_3_all.append(filter3_df, ignore_index=True)
 
     # 4. Write minimum route share per OD pair (min_route_share = pd.DataFrame(columns=['OrigZoneNo', 'DestZoneNo',
     # 'MinSharePEC'])
@@ -109,9 +111,8 @@ for origin_zone in range(len(all_origins_list)):
         min_route_trips = group['RouteODTrips'].min()
 
         min_route_share = min_route_share.append(
-            {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinSharePEC': group_min_pec,
-             'TotalODTrips': total_od_trips, 'MinRouteTrips': min_route_trips},
-            ignore_index=True)
+            {'OrigZoneNo': origin, 'DestZoneNo': destination, 'MinRouteTrips': min_route_trips,
+             'TotalODTrips': total_od_trips, 'MinSharePEC': group_min_pec}, ignore_index=True)
 
-min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_25022020.csv")
-filter_3_all.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_filter_3_all_25022020.csv")
+min_route_share.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_26022020.csv")
+filter_3_all.to_csv("E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\route_share_99_filter_3_all_26022020.csv")
