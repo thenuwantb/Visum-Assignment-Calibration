@@ -64,7 +64,7 @@ import matplotlib.pyplot as plt
 
 data = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\3_Analysis\\Direct Assignment\\Major_origns\\min_route_share_21022020.csv")
 
-data['MinSharePEC'].hist(bins = 50)
+data['MinSharePEC'].hist(bins =20 )
 plt.show()
 
 
