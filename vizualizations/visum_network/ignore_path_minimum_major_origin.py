@@ -6,7 +6,7 @@ Created on 19 Feb 2020
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ===============================================================================
+#===============================================================================
 # col_names  = ['ORIGZONENO','DESTZONENO','INDEX','ODTRIPS','NUMTRANSFERS','INVEHDIST']
 # path = "C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\3_Analysis\\Direct Assignment\\Major_origns\\3004925_Raffles_place.csv"
 # 
@@ -60,11 +60,15 @@ import matplotlib.pyplot as plt
 # # filter3_df['SHARE(%)'].hist(bins = 100)
 # # plt.show()
 # #===============================================================================
-# ===============================================================================
+#===============================================================================
 
-data = pd.read_csv(
-    "E:\\Thenuwan\\DirectAssignment-10 days\\Visum Files\\min_route_share_99_24022020.csv")
+data = pd.read_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\3_Analysis\\Direct Assignment\\Major_origns\\min_route_share_21022020.csv")
 
-data['MinSharePEC'].hist(bins=100)
-#data['MinSharePEC'].hist(cumulative=True, density = 1, bins = 100)
+data['MinSharePEC'].hist(bins =20 )
 plt.show()
+
+
+
+
+
+
