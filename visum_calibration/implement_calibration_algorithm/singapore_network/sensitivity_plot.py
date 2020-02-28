@@ -38,7 +38,7 @@ for estimate in range(len(estimate_list)):
         estimates[estimate] = coefficient_list[i]
         print estimates
 
-        rmsn_value = sg.runAssignmentCalculateErrorRMSN_Stops(Visum, estimates, obsStopPoints=observed_stop_point_df)
+        rmsn_value = sg.runAssignmentCalculateErrorRMSN_Stops(Visum=Visum, estimateList=estimates, obsStopPoints=observed_stop_point_df)
         df_rmsn.at[i, df_rmsn_columns[estimate + 1]] = rmsn_value
 
 df_rmsn.to_csv("E:\\Thenuwan\\Singapore_Calibration\\data\\observed\\sensitivity_singapore_network_27022020.csv")

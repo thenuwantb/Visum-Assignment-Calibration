@@ -70,7 +70,7 @@ def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineR
 def runAssignmentCalculateErrorRMSN_Stops(Visum, estimateList, obsStopPoints):
     setImpedenceValuesAndRunAssignment(Visum, estimateList)
     simStops = simulateStopVolumes(Visum)
-    stops_merged = obsStopPoints.merge(simStops, on = "No")
+    stops_merged = obsStopPoints.merge(simStops, on="No")
 
     passTransTotal_obs = stops_merged['PassTransTotal(AP)_Obs'].tolist()
     passTransTotal_sim = stops_merged['PassTransTotal(AP)_Sim'].tolist()
@@ -122,7 +122,7 @@ def simulateLineRouteVolumes(Visum):
     return simulatedDataFrame
 
 def simulateStopVolumes(Visum):
-    simulatedDataFrame = vlc.createStopsListDataFrame()
+    simulatedDataFrame = vlc.createStopsListDataFrame(Visum)
     changeColNamesDic = {"PassTransTotal(AP)": "PassTransTotal(AP)_Sim", "PassTransDir(AP)": "PassTransDir(AP)_Sim",
                          "PassTransWalkBoard(AP)": "PassTransWalkBoard(AP)_Sim",
                          "PassTransAlightWalk(AP)": "PassTransAlightWalk(AP)_Sim",
