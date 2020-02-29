@@ -25,7 +25,7 @@ observed_stop_point_df = pd.read_csv(
 # Create dataframe and assign values
 df_rmsn_columns = ['coefficient', 'in_veh', 'tra_walk', 'ori_wait', 'tra_wait']
 df_rmsn = pd.DataFrame(columns=df_rmsn_columns)
-coefficient_list = (np.arange(0.0, 9.9, 1)).tolist()
+coefficient_list = (np.arange(1, 6, 1)).tolist()
 coefficient_value_series = pd.Series(coefficient_list)
 df_rmsn['coefficient'] = coefficient_value_series.values
 
@@ -37,8 +37,8 @@ for estimate in range(len(estimate_list)):
     for i in range(len(coefficient_list)):
         estimates[estimate] = coefficient_list[i]
         print estimates
-
         rmsn_value = sg.runAssignmentCalculateErrorRMSN_Stops(Visum=Visum, estimateList=estimates, obsStopPoints=observed_stop_point_df)
+        print rmsn_value
         df_rmsn.at[i, df_rmsn_columns[estimate + 1]] = rmsn_value
 
-df_rmsn.to_csv("E:\\Thenuwan\\Singapore_Calibration\\data\\observed\\sensitivity_singapore_network_27022020.csv")
+df_rmsn.to_csv("E:\\Thenuwan\\Singapore_Calibration\\data\\observed\\sensitivity_singapore_network_28022020.csv")
