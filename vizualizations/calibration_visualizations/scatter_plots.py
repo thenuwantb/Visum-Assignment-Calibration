@@ -137,7 +137,6 @@ ax6.set_title('PassThroughNoStop')
 for ax in axs1.flat:
     ax.set(xlabel='Observed', ylabel = 'Simulated') 
 
-plt.savefig()
 
 #===============================================================================
 # 
