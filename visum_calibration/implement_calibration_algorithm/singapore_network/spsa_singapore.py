@@ -30,7 +30,7 @@ observed_stop_df = pd.read_csv("E:\\Thenuwan\\Singapore_Calibration\\data\\obser
 
 # implement calibration algorithm
 
-max_iterations = 3
+max_iterations = 100
 #hyper parameter set 13
 alpha = 0.602
 gamma = 0.101
