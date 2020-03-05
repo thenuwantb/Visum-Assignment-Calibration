@@ -100,7 +100,7 @@ lrt_mrt_df = line_routes_cleaned_df[(line_routes_cleaned_df['Mode'] == 'LRT') | 
 #stops_merged_df.to_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\27022020_singapore_network\\observed_data\\to_plot\\merged_stops.csv")
 #line_routes_merged_df.to_csv("C:\\Users\\thenuwan.jayasinghe\\OneDrive - tum.de\\Thesis\\1_Coding\\Experiments\\27022020_singapore_network\\observed_data\\to_plot\\merged_lines.csv")
 
-#===============================================================================
+#=========================================================================
 # plt.scatter(stops_merged_df['PASSTRANSTOTAL(AP)_OBS'], stops_merged_df['PASSTRANSTOTAL(AP)_SIM'])
 # b, m = polyfit(stops_merged_df['PASSTRANSTOTAL(AP)_OBS'], stops_merged_df['PASSTRANSTOTAL(AP)_SIM'], 1)
 # print m
