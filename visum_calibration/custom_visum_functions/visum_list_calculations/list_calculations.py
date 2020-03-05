@@ -358,15 +358,13 @@ def createStopsListDataFrame(Visum):
     """
     visumStops = Visum.Lists.CreateStopBaseList
     visumStops.AddColumn("No")
-    visumStops.AddColumn("StopAreaNo")
-    visumStops.AddColumn("NodeNo")
     visumStops.AddColumn("PassTransTotal(AP)")
     visumStops.AddColumn("PassTransDir(AP)")
     visumStops.AddColumn("PassTransWalkBoard(AP)")
     visumStops.AddColumn("PassTransAlightWalk(AP)")
     visumStops.AddColumn("TransferWaitTime(AP)")
 
-    columnsList = ["No", "StopAreaNo", "NodeNo", "PassTransTotal(AP)", "PassTransDir(AP)", "PassTransWalkBoard(AP)",
+    columnsList = ["No", "PassTransTotal(AP)", "PassTransDir(AP)", "PassTransWalkBoard(AP)",
                    "PassTransAlightWalk(AP)", "TransferWaitTime(AP)"]
 
     # creating pandas dataframe
