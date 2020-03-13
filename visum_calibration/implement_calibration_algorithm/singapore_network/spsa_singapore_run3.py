@@ -1,7 +1,6 @@
 '''
 Created by : Thenuwan Jayasinghe on 29.02.2020
-Notes : In this calibration run, in-vehicle time will be set to 1 through out the run. As an addition, transfer penalty
-        will be calibrated
+Notes : In this calibration run, all the parameters in concern (invehicle, transfer walk, origin wait, transfer wait, transfer penalty)
 Addition : transfer penalty, seconds will be converted to minutes
 '''
 
@@ -18,12 +17,12 @@ import timeit
 
 # Load Visum Version and create a Network Object
 path = "E:\\Thenuwan\\Singapore_Calibration"
-ver_file = "5_HeadwayBased_inv_anchored.ver"
+ver_file = "6_HeadwayBased_calibrate_all.ver"
 version_path = os.path.join(path, ver_file)
 Visum = com.Dispatch("Visum.Visum.170")
 
 # save results
-save_result_path = "E:\\Thenuwan\\Singapore_Calibration\\data\\results\\run_2\\hp_set_13_spsa_07032020.csv"
+save_result_path = "E:\\Thenuwan\\Singapore_Calibration\\data\\results\\run_3\\hp_set_13_spsa_11032020.csv"
 
 # load visum file
 ocv.loadVisum(VisumComDispatch=Visum, verPath=version_path)
@@ -42,7 +41,7 @@ c = 1.419
 a = 4.833
 A = 30
 
-initial_guess = [1.0, 1.0, 1.0, 5.0]
+initial_guess = [1.0, 1.0, 1.0, 1.0, 5.0]
 # initial_cost = sgs.run_assignment_calculate_error_stops_pax_trans_combined_2(visum=Visum, estimate_list=initial_guess, obs_stops_df=observed_stop_df)
 initial_cost = 7.61633661217
 # print initial_guess, initial_cost
@@ -86,10 +85,12 @@ for k in range(max_iterations):
             decrease_u[j] = current_estimate[j]
 
     # Step 3 - Function evaluation
-    cost_increase = sgs.run_assignment_calculate_error_stops_pax_trans_combined_2(visum=Visum, estimate_list=increase_u,
-                                                                                  obs_stops_df=observed_stop_df)
-    cost_decrease = sgs.run_assignment_calculate_error_stops_pax_trans_combined_2(visum=Visum, estimate_list=decrease_u,
-                                                                                  obs_stops_df=observed_stop_df)
+    cost_increase = sgs.run_assignment_calculate_error_stops_pax_trans_combined_all_para(visum=Visum,
+                                                                                         estimate_list=increase_u,
+                                                                                         obs_stops_df=observed_stop_df)
+    cost_decrease = sgs.run_assignment_calculate_error_stops_pax_trans_combined_all_para(visum=Visum,
+                                                                                         estimate_list=decrease_u,
+                                                                                         obs_stops_df=observed_stop_df)
 
     # Step 4 - Gradient approximation
     gk = np.dot((cost_increase - cost_decrease) / (2.0 * ck), deltaK)
@@ -108,9 +109,9 @@ for k in range(max_iterations):
         else:
             current_estimate[m] = best_estimate[m]
 
-    cost_new = sgs.run_assignment_calculate_error_stops_pax_trans_combined_2(visum=Visum,
-                                                                             estimate_list=current_estimate,
-                                                                             obs_stops_df=observed_stop_df)
+    cost_new = sgs.run_assignment_calculate_error_stops_pax_trans_combined_all_para(visum=Visum,
+                                                                                    estimate_list=current_estimate,
+                                                                                    obs_stops_df=observed_stop_df)
     # --------------fix 05122019---------------------------------
 
     if cost_new < best_rmsn:

@@ -80,6 +80,9 @@ def runAssignmentCalculateErrorRMSN_Stops(Visum, estimateList, obsStopPoints):
     return passTransTotal_rmsn
 
 
+
+
+
 def simulateStopPointValues(Visum):
     simulatedDataFrame = vlc.createStopPointsDataFrame(Visum)
     changeColNamesDic = {"PassTransTotal(AP)": "PassTransTotal(AP)_Sim", "PassTransDir(AP)": "PassTransDir(AP)_Sim",
@@ -111,8 +114,12 @@ def simulateConnectorVolumes(Visum):
 
 def simulateLineRouteVolumes(Visum):
     simulatedDataFrame = vlc.createLineRouteListDataFrame(Visum)
-    changeColNamesDic = {"PTripsUnlinked0(AP)": "PTripsUnlinked0(AP)_Sim",
-                         "PTripsUnlinked1(AP)": "PTripsUnlinked1(AP)_Sim"}
+    changeColNamesDic = {"PTripsUnlinked(AP)": "PTripsUnlinked(AP)_Sim",
+                         "PTripsUnlinked0(AP)": "PTripsUnlinked0(AP)_Sim",
+                         "PTripsUnlinked1(AP)": "PTripsUnlinked1(AP)_Sim",
+                         "PTripsUnlinked2(AP)": "PTripsUnlinked2(AP)_Sim",
+                         "PTripsUnlinked>2(AP)": "PTripsUnlinked>2(AP)_Sim"
+                         }
     simulatedDataFrame = simulatedDataFrame.rename(columns=changeColNamesDic)
 
     simulatedDataFrame["LineName"] = simulatedDataFrame["LineName"].astype(str)
