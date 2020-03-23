@@ -59,6 +59,7 @@ def run_assignment_calculate_error_stops_pax_trans_combined(visum, estimate_list
 
     return pass_trans_total_combined_rmsn
 
+
 def run_assignment_calculate_error_stops_pax_trans_combined_2(visum, estimate_list, obs_stops_df):
     """
     Calculates the error for PassTransWalkBoard(AP), PassTransAlightWalk(AP), PassTransDir(AP) in one list
@@ -87,6 +88,7 @@ def run_assignment_calculate_error_stops_pax_trans_combined_2(visum, estimate_li
     pass_trans_total_combined_rmsn = ec.calculateRMSN(pass_trans_combined_obs, pass_trans_combined_sim)
 
     return pass_trans_total_combined_rmsn
+
 
 def run_assignment_calculate_error_stops_pax_trans_combined_all_para(visum, estimate_list, obs_stops_df):
     """
@@ -127,17 +129,17 @@ def runAssignmentCalculateErrorRMSN_all_error_terms(Visum, estimateList, obs_sto
     # Error terms from stops
     stops_merged = obs_stops_df.merge(sim_stops, on="No")
 
-    pax_trans_total_obs = stops_merged["PassTransTotal(AP)_Obs"]
-    pax_trans_total_sim = stops_merged["PassTransTotal(AP)_Sim"]
+    pax_trans_total_obs = stops_merged["PassTransTotal(AP)_Obs"].tolist()
+    pax_trans_total_sim = stops_merged["PassTransTotal(AP)_Sim"].tolist()
 
-    pax_trans_walkb_obs = stops_merged['PassTransWalkBoard(AP)_Obs']
-    pax_trans_walkb_sim = stops_merged['PassTransWalkBoard(AP)_Sim']
+    pax_trans_walkb_obs = stops_merged["PassTransWalkBoard(AP)_Obs"].tolist()
+    pax_trans_walkb_sim = stops_merged["PassTransWalkBoard(AP)_Sim"].tolist()
 
-    pax_trans_alightw_obs = stops_merged['PassTransAlightWalk(AP)_Obs']
-    pax_trans_alightw_sim = stops_merged['PassTransAlightWalk(AP)_Sim']
+    pax_trans_alightw_obs = stops_merged["PassTransAlightWalk(AP)_Obs"].tolist()
+    pax_trans_alightw_sim = stops_merged["PassTransAlightWalk(AP)_Sim"].tolist()
 
-    pass_trans_dir_obs = stops_merged['PassTransDir(AP)_Obs']
-    pass_trans_dir_sim = stops_merged['PassTransDir(AP)_Sim']
+    pass_trans_dir_obs = stops_merged["PassTransDir(AP)_Obs"].tolist()
+    pass_trans_dir_sim = stops_merged['PassTransDir(AP)_Sim'].tolist()
 
     pass_trans_combined_obs = pax_trans_walkb_obs + pax_trans_alightw_obs + pass_trans_dir_obs
     pass_trans_combined_sim = pax_trans_walkb_sim + pax_trans_alightw_sim + pass_trans_dir_sim
@@ -148,11 +150,49 @@ def runAssignmentCalculateErrorRMSN_all_error_terms(Visum, estimateList, obs_sto
     pass_trans_dir_rmsn = ec.calculateRMSN(pass_trans_dir_obs, pass_trans_dir_sim)
     pass_trans_total_combined_rmsn = ec.calculateRMSN(pass_trans_combined_obs, pass_trans_combined_sim)
 
-    #sim_line_routes
-    #strart from here - 14022020
+    # sim_line_routes
+    line_routes_merged = pd.merge(sim_line_routes, obs_line_routes, on=['LineName', 'Name'], how='left')
+
+    pax_trips_unlinked_obs = line_routes_merged["PTripsUnlinked(AP)_Obs"].tolist()
+    pax_trips_unlinked_sim = line_routes_merged["PTripsUnlinked(AP)_Sim"].tolist()
+
+    pax_trips_unlinked_0_obs = line_routes_merged["PTripsUnlinked0(AP)_Obs"].tolist()
+    pax_trips_unlinked_0_sim = line_routes_merged["PTripsUnlinked0(AP)_Sim"].tolist()
+
+    pax_trips_unlinked_1_obs = line_routes_merged["PTripsUnlinked1(AP)_Obs"].tolist()
+    pax_trips_unlinked_1_sim = line_routes_merged["PTripsUnlinked1(AP)_Sim"].tolist()
+
+    pax_trips_unlinked_2_obs = line_routes_merged["PTripsUnlinked2(AP)_Obs"].tolist()
+    pax_trips_unlinked_2_sim = line_routes_merged["PTripsUnlinked2(AP)_Sim"].tolist()
+
+    pax_trips_unlinked_g_2_obs = line_routes_merged["PTripsUnlinked>2(AP)_Obs"].tolist()
+    pax_trips_unlinked_g_2_sim = line_routes_merged["PTripsUnlinked>2(AP)_Sim"].tolist()
+
+    pax_trips_unlinked_rmsn = ec.calculateRMSN(pax_trips_unlinked_obs, pax_trips_unlinked_sim)
+    pax_trips_unlinked_0_rmsn = ec.calculateRMSN(pax_trips_unlinked_0_obs, pax_trips_unlinked_0_sim)
+    pax_trips_unlinked_1_rmsn = ec.calculateRMSN(pax_trips_unlinked_1_obs, pax_trips_unlinked_1_sim)
+    pax_trips_unlinked_2_rmsn = ec.calculateRMSN(pax_trips_unlinked_2_obs, pax_trips_unlinked_2_sim)
+    pax_trips_unlinked_g_2_rmsn = ec.calculateRMSN(pax_trips_unlinked_g_2_obs, pax_trips_unlinked_g_2_sim)
+
+    dict = {}
+    dict['pax_trans_total_rmsn'] = pax_trans_total_rmsn
+    dict['pax_trans_walkb_rmsn'] = pax_trans_walkb_rmsn
+    dict['pax_trans_alightw_rmsn'] = pax_trans_alightw_rmsn
+    dict['pass_trans_dir_rmsn'] = pass_trans_dir_rmsn
+    dict['pass_trans_total_combined_rmsn'] = pass_trans_total_combined_rmsn
+    dict['pax_trips_unlinked_rmsn'] = pax_trips_unlinked_rmsn
+    dict['pax_trips_unlinked_0_rmsn'] = pax_trips_unlinked_0_rmsn
+    dict['pax_trips_unlinked_1_rmsn'] = pax_trips_unlinked_1_rmsn
+    dict['pax_trips_unlinked_2_rmsn'] = pax_trips_unlinked_2_rmsn
+    dict['pax_trips_unlinked_g_2_rmsn'] = pax_trips_unlinked_g_2_rmsn
+    dict['paxTripsWoCon'] = paxTripsWoCon
+
+    return dict
+
+
+
 
 def simulate_line_route_ap_volumes(Visum):
-
     simulatedDataFrame = vlcs.createLineRouteListDataFrame(Visum)
     changeColNamesDic = {"PTripsUnlinked(AP)": "PTripsUnlinked(AP)_Sim",
                          "PTripsUnlinked0(AP)": "PTripsUnlinked0(AP)_Sim",
@@ -166,8 +206,6 @@ def simulate_line_route_ap_volumes(Visum):
     simulatedDataFrame["Name"] = simulatedDataFrame["Name"].astype(str)
 
     return simulatedDataFrame
-
-
 
 
 def simulate_stop_ap_volumes(Visum):
@@ -210,7 +248,7 @@ def set_impedence_values_run_assignment_2(Visum, estimate_list):
     transferWalkTime_c = estimate_list[0]
     originWaitTime_c = estimate_list[1]
     transferWaitTime_c = estimate_list[2]
-    transferPenalty = estimate_list[3]*60.0
+    transferPenalty = estimate_list[3] * 60.0
 
     # setting attribute values of headway based assignment
     impedenceParaObject = Visum.Procedures.Operations.ItemByKey(
@@ -223,6 +261,7 @@ def set_impedence_values_run_assignment_2(Visum, estimate_list):
 
     Visum.Procedures.Execute()
 
+
 def set_impedence_values_run_assignment_all_para(Visum, estimate_list):
     """in vehicle time is set to 1
         transfer penalty is calibrated
@@ -232,7 +271,7 @@ def set_impedence_values_run_assignment_all_para(Visum, estimate_list):
     transferWalkTime_c = estimate_list[1]
     originWaitTime_c = estimate_list[2]
     transferWaitTime_c = estimate_list[3]
-    transferPenalty = estimate_list[4]*60.0
+    transferPenalty = estimate_list[4] * 60.0
 
     # setting attribute values of headway based assignment
     impedenceParaObject = Visum.Procedures.Operations.ItemByKey(
@@ -245,4 +284,3 @@ def set_impedence_values_run_assignment_all_para(Visum, estimate_list):
     impedenceParaObject.SetAttValue("NUMTRANSFERSVAL", float(transferPenalty))
 
     Visum.Procedures.Execute()
-

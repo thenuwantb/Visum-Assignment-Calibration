@@ -81,8 +81,6 @@ def runAssignmentCalculateErrorRMSN_Stops(Visum, estimateList, obsStopPoints):
 
 
 
-
-
 def simulateStopPointValues(Visum):
     simulatedDataFrame = vlc.createStopPointsDataFrame(Visum)
     changeColNamesDic = {"PassTransTotal(AP)": "PassTransTotal(AP)_Sim", "PassTransDir(AP)": "PassTransDir(AP)_Sim",
