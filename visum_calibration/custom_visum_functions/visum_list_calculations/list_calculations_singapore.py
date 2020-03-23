@@ -85,6 +85,7 @@ def createConnectorListDataFrame(Visum):
 
     return connectorsDf
 
+
 def createLineRouteListDataFrame(Visum):
     visumLineRoutes = Visum.Lists.CreateLineRouteList
     visumLineRoutes.AddColumn("LineName")
@@ -101,6 +102,7 @@ def createLineRouteListDataFrame(Visum):
                                columns=["LineName", "Name", "DirectionCode", "PTripsUnlinked(AP)",
                                         "PTripsUnlinked0(AP)", "PTripsUnlinked1(AP)", "PTripsUnlinked2(AP)",
                                         "PTripsUnlinked>2(AP)"])
+
     return lineRouteDf
 
 
@@ -127,11 +129,12 @@ def createStopsListDataFrame(Visum):
 
     return stopListDf
 
+
 def getPuTStats(Visum):
     visumPuTStats = Visum.Lists.CreatePuTStatList
     visumPuTStats.AddColumn("PTripsLinkedWoCon")
     statsArray = visumPuTStats.SaveToArray()
-    statList = list(statsArray) #contain a list of tupels
+    statList = list(statsArray)  # contain a list of tupels
     paxTripsWoCon_tup = statList[0]
     paxTripsWoCon = paxTripsWoCon_tup[0]
 
