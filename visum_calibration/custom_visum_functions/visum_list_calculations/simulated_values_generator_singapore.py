@@ -121,7 +121,8 @@ def run_assignment_calculate_error_stops_pax_trans_combined_all_para(visum, esti
 
 
 def runAssignmentCalculateErrorRMSN_all_error_terms(Visum, estimateList, obs_stops_df, obs_line_routes):
-    set_impedence_values_run_assignment_all_para(Visum, estimateList)
+    set_impedence_values_run_assignment_2(Visum, estimateList) #in_veh anchored
+    #set_impedence_values_run_assignment_all_para(Visum, estimateList)
     sim_stops = simulate_stop_ap_volumes(Visum)
     sim_line_routes = simulate_line_route_ap_volumes(Visum)
     paxTripsWoCon = vlcs.getPuTStats(Visum)
