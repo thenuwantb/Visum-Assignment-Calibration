@@ -6,6 +6,7 @@ Created on 14 Jan 2020
 import custom_visum_functions.visum_list_calculations.list_calculations_singapore as vlcs
 import custom_visum_functions.satistical_calculations.error_calculations as ec
 import pandas as pd
+import numpy as np
 
 
 # Calculate rmsn error
@@ -150,6 +151,7 @@ def runAssignmentCalculateErrorRMSN_all_error_terms(Visum, estimateList, obs_sto
     pax_trans_alightw_rmsn = ec.calculateRMSN(pax_trans_alightw_obs, pass_trans_dir_sim)
     pass_trans_dir_rmsn = ec.calculateRMSN(pass_trans_dir_obs, pass_trans_dir_sim)
     pass_trans_total_combined_rmsn = ec.calculateRMSN(pass_trans_combined_obs, pass_trans_combined_sim)
+    mean_pax_trans_combined_rmsn = np.mean([pax_trans_walkb_rmsn, pax_trans_alightw_rmsn, pass_trans_dir_rmsn])
 
     # sim_line_routes
     line_routes_merged = pd.merge(sim_line_routes, obs_line_routes, on=['LineName', 'Name'], how='left')
@@ -181,6 +183,7 @@ def runAssignmentCalculateErrorRMSN_all_error_terms(Visum, estimateList, obs_sto
     dict['pax_trans_alightw_rmsn'] = pax_trans_alightw_rmsn
     dict['pass_trans_dir_rmsn'] = pass_trans_dir_rmsn
     dict['pass_trans_total_combined_rmsn'] = pass_trans_total_combined_rmsn
+    dict['mean_pax_trans_combined_rmsn'] = mean_pax_trans_combined_rmsn
     dict['pax_trips_unlinked_rmsn'] = pax_trips_unlinked_rmsn
     dict['pax_trips_unlinked_0_rmsn'] = pax_trips_unlinked_0_rmsn
     dict['pax_trips_unlinked_1_rmsn'] = pax_trips_unlinked_1_rmsn
