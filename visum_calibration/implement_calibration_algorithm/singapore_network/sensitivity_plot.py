@@ -32,10 +32,11 @@ df_rmsn_columns = ['in_veh', 'transfer_walk', 'origin_wait', 'transfer_wait', 't
                    'pax_trips_unlinked_1_rmsn', 'pax_trips_unlinked_2_rmsn', 'pax_trips_unlinked_g_2_rmsn',
                    'paxTripsWoCon']
 summary_df = pd.DataFrame(columns=df_rmsn_columns)
-coefficient_list = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8, 6.0]
+#coefficient_list = [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8, 6.0]
+coefficient_list = [1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0, 3.2, 3.4, 3.6, 3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.0, 5.2, 5.4, 5.6, 5.8, 6.0]
 #coefficient_list = [2.0]
-estimate_list = [0.001, 0.001, 0.001, 0.001, 0.001]
-#estimate_list = [1, 1, 1, 1, 1]
+#estimate_list = [0.001, 0.001, 0.001, 0.001, 0.001]
+estimate_list = [1, 1, 1, 1, 1]
 
 for estimate in range(len(estimate_list)):
     estimates = copy.copy(estimate_list)
@@ -72,4 +73,4 @@ for estimate in range(len(estimate_list)):
         temp_dict.clear()
 
 summary_df = summary_df[df_rmsn_columns]
-summary_df.to_csv("E:\\Thenuwan\\Singapore_Calibration\\data\\observed\\sensitivity_singapore_network_15032020_all.csv")
+summary_df.to_csv("E:\\Thenuwan\\Singapore_Calibration\\data\\observed\\sensitivity_singapore_network_23032020_all_1to6.csv")
