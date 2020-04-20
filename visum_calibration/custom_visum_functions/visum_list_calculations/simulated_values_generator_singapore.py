@@ -122,8 +122,8 @@ def run_assignment_calculate_error_stops_pax_trans_combined_all_para(visum, esti
 
 
 def runAssignmentCalculateErrorRMSN_all_error_terms(Visum, estimateList, obs_stops_df, obs_line_routes):
-    set_impedence_values_run_assignment_2(Visum, estimateList) #in_veh anchored
-    #set_impedence_values_run_assignment_all_para(Visum, estimateList)
+    #set_impedence_values_run_assignment_2(Visum, estimateList) #in_veh anchored
+    set_impedence_values_run_assignment_all_para(Visum, estimateList)
     sim_stops = simulate_stop_ap_volumes(Visum)
     sim_line_routes = simulate_line_route_ap_volumes(Visum)
     paxTripsWoCon = vlcs.getPuTStats(Visum)
@@ -288,3 +288,65 @@ def set_impedence_values_run_assignment_all_para(Visum, estimate_list):
     impedenceParaObject.SetAttValue("NUMTRANSFERSVAL", float(transferPenalty))
 
     Visum.Procedures.Execute()
+
+
+#Saving the error values calculated to a dictionary and then to a dataframe
+def parse_error_from_dict_to_df(simulated_error_dict, current_estimate):
+    df_columns = ['in_vehicle', 'transfer_walk', 'origin_wait', 'transfer_wait', 'transfer_penalty', 'pax_trans_total_rmsn',
+                       'pax_trans_walkb_rmsn', 'pax_trans_alightw_rmsn', 'pass_trans_dir_rmsn',
+                       'pass_trans_total_combined_rmsn', 'mean_pax_trans_combined_rmsn', 'pax_trips_unlinked_rmsn',
+                       'pax_trips_unlinked_0_rmsn',
+                       'pax_trips_unlinked_1_rmsn', 'pax_trips_unlinked_2_rmsn', 'pax_trips_unlinked_g_2_rmsn',
+                       'paxTripsWoCon']
+
+    temp_dict = {}
+    return_df = pd.DataFrame(columns=df_columns)
+    temp_dict['in_vehicle'] = current_estimate[0]
+    temp_dict['transfer_walk'] = current_estimate[1]
+    temp_dict['origin_wait'] = current_estimate[2]
+    temp_dict['transfer_wait'] = current_estimate[3]
+    temp_dict['transfer_penalty'] = current_estimate[4]
+
+    # temp_dict['transfer_walk'] = current_estimate[0]
+    # temp_dict['origin_wait'] = current_estimate[1]
+    # temp_dict['transfer_wait'] = current_estimate[2]
+    # temp_dict['transfer_penalty'] = current_estimate[3]
+
+    temp_dict['pax_trans_total_rmsn'] = simulated_error_dict['pax_trans_total_rmsn']
+    temp_dict['pax_trans_walkb_rmsn'] = simulated_error_dict['pax_trans_walkb_rmsn']
+    temp_dict['pax_trans_alightw_rmsn'] = simulated_error_dict['pax_trans_alightw_rmsn']
+    temp_dict['pass_trans_dir_rmsn'] = simulated_error_dict['pass_trans_dir_rmsn']
+    temp_dict['pass_trans_total_combined_rmsn'] = simulated_error_dict['pass_trans_total_combined_rmsn']
+    temp_dict['mean_pax_trans_combined_rmsn'] = simulated_error_dict['mean_pax_trans_combined_rmsn']
+
+    temp_dict['pax_trips_unlinked_rmsn'] = simulated_error_dict['pax_trips_unlinked_rmsn']
+    temp_dict['pax_trips_unlinked_0_rmsn'] = simulated_error_dict['pax_trips_unlinked_0_rmsn']
+    temp_dict['pax_trips_unlinked_1_rmsn'] = simulated_error_dict['pax_trips_unlinked_1_rmsn']
+    temp_dict['pax_trips_unlinked_2_rmsn'] = simulated_error_dict['pax_trips_unlinked_2_rmsn']
+    temp_dict['pax_trips_unlinked_g_2_rmsn'] = simulated_error_dict['pax_trips_unlinked_g_2_rmsn']
+
+    temp_dict['paxTripsWoCon'] = simulated_error_dict['paxTripsWoCon']
+
+    temp_df = pd.DataFrame(temp_dict, index =[0])
+    return_df = return_df.append(temp_df)
+
+    return return_df
+
+def select_better_objective_function(inc_obj_list, dec_obj_list, obj_func_1, obj_func_2):
+    obj_1 = obj_func_1
+    obj_2 = obj_func_2
+
+    obj_func_1_inc = inc_obj_list[0]
+    obj_func_1_dec = dec_obj_list[0]
+
+    obj_func_2_inc = inc_obj_list[1]
+    obj_func_2_dec = dec_obj_list[1]
+
+    rel_change_obj_1 = (obj_func_1_inc - obj_func_1_dec) / np.mean([obj_func_1_inc, obj_func_1_dec])
+    rel_change_obj_2 = (obj_func_2_inc - obj_func_2_dec) / np.mean([obj_func_2_inc, obj_func_2_dec])
+
+    if rel_change_obj_1 > rel_change_obj_2:
+        return obj_1
+    else:
+        return obj_2
+
