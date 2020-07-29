@@ -50,7 +50,7 @@ def runAssignmentCalculateErrorRMSN(Visum, estimateList, obsStopPoints, obsLineR
     # calculate RMSN
     # passTransWalkBoard_rmsn = ec.calculateRMSN(passTransWalkBoard_obs, passTransWalkBoard_sim)
     # passTransAlightWalk_rmsn = ec.calculateRMSN(passTransAlightWalk_obs, passTransAlightWalk_sim)
-    passTransTotal_rmsn = ec.calculateRMSN(passTransTotal_obs, passTransTotal_sim)
+    passTransTotal_rmsn = ec.calculate_rmsn(passTransTotal_obs, passTransTotal_sim)
     # transferWaitTime_rmsn = ec.calculateRMSN(transferWaitTime_obs, transferWaitTime_sim)
     # passTransWalk_rmsn = ec.calculateRMSN(passTransWalk_obs, passTransWalk_sim)
     # connectorVolume_rmsn = ec.calculateRMSN(connectorVolume_obs, connectorVolume_sim)
@@ -75,7 +75,7 @@ def runAssignmentCalculateErrorRMSN_Stops(Visum, estimateList, obsStopPoints):
     passTransTotal_obs = stops_merged['PassTransTotal(AP)_Obs'].tolist()
     passTransTotal_sim = stops_merged['PassTransTotal(AP)_Sim'].tolist()
 
-    passTransTotal_rmsn = ec.calculateRMSN(passTransTotal_obs, passTransTotal_sim)
+    passTransTotal_rmsn = ec.calculate_rmsn(passTransTotal_obs, passTransTotal_sim)
 
     return passTransTotal_rmsn
 

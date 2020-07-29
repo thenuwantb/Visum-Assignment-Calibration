@@ -6,7 +6,7 @@ Created on 9 Dec 2019
 import math
 
 
-def calculateRMSN(observedList, simulatedList):
+def calculate_rmsn(observedList, simulatedList):
     differenceList = [obs_i - sim_i for obs_i, sim_i in zip(observedList, simulatedList)]
     differenceSquared = [diff ** 2 for diff in differenceList]
 
@@ -16,6 +16,35 @@ def calculateRMSN(observedList, simulatedList):
     rmsn = (math.sqrt(len(observedList) * sumOfDifferenceSquared)) / sumOfObserved
 
     return rmsn
+
+
+def calculate_rmsn_0(observed, simulated):
+    count = 0
+    error = 0
+    diff_squared_sum = 0
+    sum_obs = 0
+
+    for obs_i, sim_i in zip(observed, simulated):
+        if obs_i > 0:
+            diff_squared_sum += (obs_i - sim_i) ** 2
+            sum_obs += obs_i
+            count += 1
+        else:
+            continue
+    rmsn_error_0 = math.sqrt(count*diff_squared_sum)/sum_obs
+    return  rmsn_error_0
+
+def calculate_mape(observed, simulated):
+    count = 0
+    error = 0
+    for obs_i, sim_i in zip(observed, simulated):
+        if obs_i > 0:
+            error += abs((obs_i - sim_i) / obs_i)
+            count += 1
+        else:
+            continue
+    mape_error = error / count
+    return mape_error
 
 
 def calculateRMPSE(observedList, simulatedList):

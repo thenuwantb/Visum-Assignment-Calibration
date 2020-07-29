@@ -141,7 +141,7 @@ def calcErrorLinklistSimulatedAndObserved(Visum, observedLinkListDf, estimateLis
     observedValuesList = comparisonTableDf['Observed_Values'].tolist()
     simulatedValuesList = comparisonTableDf['Simulated_Values'].tolist()
 
-    error_1 = ec.calculateRMSN(observedValuesList, simulatedValuesList)
+    error_1 = ec.calculate_rmsn(observedValuesList, simulatedValuesList)
 
     return error_1
 
@@ -255,7 +255,7 @@ def calcErrorStopPointSimulatedAndObserved(Visum, observedStopPointDf, estimateL
     observedValuesList = comparisonTableDf['Observed_Values'].tolist()
     simulatedValuesList = comparisonTableDf['Simulated_Values'].tolist()
 
-    error_2 = ec.calculateRMSN(observedValuesList, simulatedValuesList)
+    error_2 = ec.calculate_rmsn(observedValuesList, simulatedValuesList)
 
     return error_2
 
